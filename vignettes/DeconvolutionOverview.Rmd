@@ -1,0 +1,54 @@
+---
+title: "Deconvolution glossary"
+author: "Konstantin Zaitsev"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+## Heterogenity of samples
+
+Samples in biological data are often heterogenious.
+
+Blood for example.
+
+More text incoming.
+
+
+## Deconvolution problem
+
+Suppose that we want to mix some cell types. Let $W$ be an $n \times c$ matrix where $n$ is the number of genes and $c$ is the number of cell types. Matrix $W$ describes how every gene is expressed in concrete cell type. Let $H$ be an $c \times m$ matrix where $m$ is the number of samples we want to mix. Matrix $H$ describes in what proportions (frequencies) we want to mix our cell types, hence the sum of every column in $H$ has to be equal to one.
+
+Mixing process can be modeled using linear model:
+$$ X = W \times H$$
+where resulting $n \times m$ matrix describes how each gene is expressed in the resuling heterogenious mix.
+
+<br><br>
+
+Deconvolution problem is about opposite process. 
+
+Observed gene expression matrix $X$ is given to us and we want to find such matrices $W$ and $H$ that
+
+$$ O \approx W \times H$$
+
+
+
+
+
+## Partial deconvolution
+
+
+Let $X$ be the $n \times m$ matrix of observed gene expression profiles, whew $n$ is the number of genes and $m$ is the number of samples. We want to find such matricies $W$ ($n \times c$) and $H$ ($c \times m$) that $$ O \approx W \times H$$
+
+where $c$ is the number of expected cell types. Matrix $W$ describes how every gene is expressed in cell types while matrix $H$ describes the proportions of every cell type inside in the samples.
+
+Some constraints have to applied to this problem: 
+
+1. All the values of matricies $O, H$ and $W$ are non-negative
+2. Sums of columns of matrix H are close to 1
+
+There are a lot of supervised algorithms (links) that allows to do that. These algorithms usually require additional information to perform deconvolution such as matricies $H$, $W$ or knowledge of cell-specific marker. 
+
+Which gene do we call marker? This gene is considered to express in only one cell type during the experiment. If genes are expressed in only one cell type their expression profiles have to be linear.

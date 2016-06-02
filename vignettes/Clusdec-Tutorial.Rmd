@@ -1,0 +1,100 @@
+---
+title: "ClusDec tutorial"
+author: "Konstantin Zaitsev"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## ClusDec -- clustering approach to solve complete deconvolution problem
+
+Here we introduce ClustDec, de novo deconvolution method that allows identification of individual cell types in the mixture without knowing either cell types proportions or their corresponding cell-specific markers.
+
+The basic idea of ClusDec is to find linear clusters that will then used as putative signatures for DSA Algorithm described in 1.
+
+The basic workflow consists several steps: preprocessing including clustering, evaluating accuracies of combination of clusters and then using best combination as putative signatures for DSA algorithm (link)
+
+```{r, message=FALSE, warning=FALSE}
+library(clusdec)
+set.seed(31)
+
+data("datasetLiverBrainLung")
+mixedGed <- datasetLiverBrainLung[, 10:42]
+clusteredGed <- preprocessDataset(mixedGed, k=4) # 4 clusters
+accuracy <- clusdecAccuracy(clusteredGed, 3, cores=2) # assume 3 cell/tissue types
+results <- chooseBest(clusteredGed, accuracy)
+plotProportions(results)
+```
+
+
+## Data in the package
+Two data sets are presented in this package and we are going to use this data sets in examples. 
+
+First data set is `datasetLiverBrainLung`. It is publicly available GEO dataset GSE19830^[Expression data from pure mixed brain, liver and lung to test feasability and sensitivity of statistical deconvolution] with microarray probes mapped to genes. This dataset is widely used for any deconvolution purposes. 
+You can access this dataset simply by using:
+```{r}
+data("datasetLiverBrainLung")
+head(datasetLiverBrainLung[, 1:5])
+```
+
+
+
+Second data set is `proportionsLiverBrainLung`. It contains actual proportions of liver, brain and lung in `datasetLiverBrainLung`.
+```{r}
+data("proportionsLiverBrainLung")
+head(proportionsLiverBrainLung[, 10:14])
+```
+
+
+
+## Preprocessing
+
+First stage of ClusDec algorithm is preprocessing.
+Preprocessing consists of 3 major steps:
+
+1. If needed, rows (usually microarray probes) corresponding to the same genes are collapsed, only most expressed probe is taken for further analysis.
+  It's common technique in microarray data analysis.
+2. If needed, only highly expressed genes are taken for further analysis. The main reason to do that is noise reduction.
+3. All genes are clustered (in linear space) using Kmeans with cosine simillarity as distance.
+
+Function `preprocessDataset` takes several arguments. Most important are dataset, and k which is number of centers in Kmeans.
+
+```{r, message=FALSE, warning=FALSE}
+library(clusdec)
+data("datasetLiverBrainLung")
+
+mixedGed <- datasetLiverBrainLung[, 10:42]
+head(mixedGed[, 1:5])
+nrow(mixedGed)
+
+set.seed(31)
+clusteredGed <- preprocessDataset(mixedGed, k=4)
+head(clusteredGed[, 1:5], 10)
+nrow(clusteredGed)
+
+```
+
+What should you see after preprocessing:
+
+1. Every row is associated with a cluster. Profiles of genes that lay in the same cluster are linear. 
+2. Number of rows now is decreased to 10000. This number is deafult value of argument `topGenes` of function `preprocessDataset`.
+3. Values of expression are now in linear scale instead of logarithmic.
+
+
+
+
+## Evaluating accuracy
+
+For now lets assume we fixed number of clusters $k$ as well as number of expected cell/tissue types $c$. Genes that lay in one (linear) cluster might be considered as signatures for cell/tissue type. Linearity is necessary but not sufficient condition. We can evaluate the accuracy of deconvolution if every combination of $k$ from $c$ clusters were assumed as signature genes for DSA algorithm. Function `clusdecAccuracy` takes several arguments: clustered dataset, number of expected cell types and processor cores to perform evaluation.
+
+```{r}
+accuracy <- clusdecAccuracy(clusteredGed, 3, cores=2)
+accuracy
+```
+
+Here we evaluate 2 values for every combination of our clusters.
+
+First value is sum to one error. It describes how good deconvolution proportions fit sum to one constraint. 

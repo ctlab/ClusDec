@@ -1,0 +1,22 @@
+Package: clusdec
+Type: Package
+Title: Cell Type Deconvolution by Clustering Approach
+Version: 0.99
+Author: Konstantin Zaitsev
+Maintainer: Konstantin Zaitsev <zayats1812@mail.ru>
+Description: Performs deconvolution of gene expression dataset with prior
+    knowledge of cell-specific markers
+License: GPL v.2.0
+LazyData: TRUE
+VignetteBuilder: ,
+    knitr
+Imports:
+    CellMix,
+    amap,
+    RColorBrewer
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown
+Enhances: ggplot2, reshape2, pheatmap
+RoxygenNote: 5.0.1
