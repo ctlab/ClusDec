@@ -8,6 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 ## Heterogenity of samples
 
 Samples in biological data are often heterogenious.
@@ -32,23 +33,3 @@ Deconvolution problem is about opposite process.
 Observed gene expression matrix $X$ is given to us and we want to find such matrices $W$ and $H$ that
 
 $$ O \approx W \times H$$
-
-
-
-
-
-## Partial deconvolution
-
-
-Let $X$ be the $n \times m$ matrix of observed gene expression profiles, whew $n$ is the number of genes and $m$ is the number of samples. We want to find such matricies $W$ ($n \times c$) and $H$ ($c \times m$) that $$ O \approx W \times H$$
-
-where $c$ is the number of expected cell types. Matrix $W$ describes how every gene is expressed in cell types while matrix $H$ describes the proportions of every cell type inside in the samples.
-
-Some constraints have to applied to this problem: 
-
-1. All the values of matricies $O, H$ and $W$ are non-negative
-2. Sums of columns of matrix H are close to 1
-
-There are a lot of supervised algorithms (links) that allows to do that. These algorithms usually require additional information to perform deconvolution such as matricies $H$, $W$ or knowledge of cell-specific marker. 
-
-Which gene do we call marker? This gene is considered to express in only one cell type during the experiment. If genes are expressed in only one cell type their expression profiles have to be linear.
