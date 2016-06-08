@@ -21,25 +21,6 @@ clusterStats <- function(dataset) {
         clusters.means[i, ] <- means / sqrt(sum(means^2))
     }
 
-    dist.center <- lapply(1:clusters.counts, function(i) {
-        subset <- data.norm[data.norm[, 1] == i, 2:ncol(data.norm)]
-        apply(subset, 1, function(r) {
-            space.metric(r, clusters.means[i, ])
-        })
-    })
-
-    dist.center.means <- sapply(dist.center, mean)
-    dist.center.max <- sapply(dist.center, max)
-
-
-    dist.pairwise <- lapply(1:clusters.counts, function(i) {
-        subset <- as.matrix(data.norm[data.norm[, 1] == i, 2:ncol(data.norm)])
-        sapply(1:10000, function(i) {
-            pair <- sample(1:nrow(subset), 2)
-            space.metric(subset[pair[1], ], subset[pair[2], ])
-        })
-    })
-
     cor.pairwise <- lapply(1:clusters.counts, function(i) {
         subset <- as.matrix(data.norm[data.norm[, 1] == i, 2:ncol(data.norm)])
         sapply(1:10000, function(i) {
@@ -57,24 +38,17 @@ clusterStats <- function(dataset) {
     })
 
 
-    dist.pairwise.means <- sapply(dist.pairwise, mean)
-    dist.pairwise.max <- sapply(dist.pairwise, max)
     cos.pairwise.means <- sapply(cos.pairwise, mean)
     cos.pairwise.max <- sapply(cos.pairwise, max)
 
     cor.pairwise.means <- sapply(cor.pairwise, mean)
 
     result <- data.frame(
-        center_mean=dist.center.means,
-        center_max=dist.center.max,
-        pairwise_mean=dist.pairwise.means,
-        pairwise_max=dist.pairwise.max,
         pairwise_cor=cor.pairwise.means,
-        pairwise_cos_mean=cos.pairwise.means,
-        pairwise_cos_max=cos.pairwise.max
+        pairwise_cos_mean=cos.pairwise.means
     )
     rownames(result) <- paste0("cluster", 1:clusters.counts)
-    result <- result[order(-result[, 5]), ]
+    result <- result[order(-result[, 1]), ]
     return(result)
 }
 
@@ -88,6 +62,20 @@ logDataset <- function(ge) {
     return(log2(ge + 1))
 }
 
-createReport <- function() {
-    # TODO
+createReport <- function(dataset, accuracy, where=".") {
+    clustersDirName <- paste0(where, "/clusters")  
+    dir.create(clustersDirName)
+    clusterNumber <- max(dataset[, 1])
+    lapply(1:clusterNumber, function(i) {
+      subset <- dataset[dataset[, 1] == i, ]
+      write.table(rownames(subset), paste0(clustersDirName, "/cluster", i, ".txt"),
+                  sep="\n", col.names=F, row.names=F, quote=F)
+    })
+    stats <- clusterStats(dataset)
+    write.table.mine(stats, "stats.tsv")
+    results <- chooseBest(dataset, accuracy)
+    plotProportions(results)
+    ggsave("results.png", height=5, width=5, units="in")
+    write.table.mine(basis(results), "basis.tsv")
+    write.table.mine(coef(results), "coef.tsv")
 }

@@ -25,6 +25,11 @@ setMethod("collapseGenes", c("ANY", "character"),
               probes <- probes[!is.na(probes)]
               probes <- probes[probes != ""]
               probes <- probes[!grepl("//", probes)]
+              
+              # also removing LOC and orf
+              probes <- probes[!grepl("^LOC\\d+", probes, ignore.case = T)]
+              probes <- probes[!grepl("^C\\w+orf\\d+", probes, ignore.case = T)]
+              
               step1 <- length(probes)
 
               message(paste0(step0 - step1, " probes were removed while mapping probes to genes as non-mapped probes or non-uniqely mapped probes"))
