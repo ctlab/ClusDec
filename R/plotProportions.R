@@ -15,8 +15,8 @@
 #'}
 #'@export
 plotProportions <- function(..., pnames=NULL) {
-    stopifnot(require(ggplot2))
-    stopifnot(require(reshape2))
+    requireNamespace(ggplot2)
+    requireNamespace(reshape2)
 
 
     proportions <- list(...)
@@ -48,7 +48,7 @@ plotProportions <- function(..., pnames=NULL) {
             scale_x_discrete(labels=colnames(proportions[[1]])) +
             facet_grid(Var1~.) + ylab("proportions") + ylim(0, 1.1) + theme_bw() +
             theme(axis.title.x = element_blank(),
-                  axis.text.x  = element_text(angle=45, hjust=1)) + guides(fill=F)
+                  axis.text.x  = element_text(angle=45, hjust=1)) + guides(fill=FALSE)
     if (length(proportions) > 1) {
         gplot <- gplot + theme(legend.title = element_blank(), legend.position="top")
 

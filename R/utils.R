@@ -1,6 +1,6 @@
 #utils
 
-write.table.mine <- function(data, fn, ...) write.table(data, fn, sep="\t", quote=F, col.names=NA)
+write.table.mine <- function(data, fn, ...) write.table(data, fn, sep="\t", quote=FALSE, col.names=NA)
 read.table.mine <- function(fn, ...) read.table(fn, sep="\t", header=1, row.names=1, ...)
 norm.length <- function(r) r / sqrt(sum(r^2))
 norm.length.matrix <- function(m) t(apply(m, 1, norm.length))
@@ -63,13 +63,13 @@ logDataset <- function(ge) {
 }
 
 createReport <- function(dataset, accuracy, where=".") {
-    clustersDirName <- paste0(where, "/clusters")  
+    clustersDirName <- paste0(where, "/clusters")
     dir.create(clustersDirName)
     clusterNumber <- max(dataset[, 1])
     lapply(1:clusterNumber, function(i) {
       subset <- dataset[dataset[, 1] == i, ]
       write.table(rownames(subset), paste0(clustersDirName, "/cluster", i, ".txt"),
-                  sep="\n", col.names=F, row.names=F, quote=F)
+                  sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
     })
     stats <- clusterStats(dataset)
     write.table.mine(stats, "stats.tsv")

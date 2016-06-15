@@ -25,11 +25,11 @@ setMethod("collapseGenes", c("ANY", "character"),
               probes <- probes[!is.na(probes)]
               probes <- probes[probes != ""]
               probes <- probes[!grepl("//", probes)]
-              
+
               # also removing LOC and orf
-              probes <- probes[!grepl("^LOC\\d+", probes, ignore.case = T)]
-              probes <- probes[!grepl("^C\\w+orf\\d+", probes, ignore.case = T)]
-              
+              probes <- probes[!grepl("^LOC\\d+", probes, ignore.case = TRUE)]
+              probes <- probes[!grepl("^C\\w+orf\\d+", probes, ignore.case = TRUE)]
+
               step1 <- length(probes)
 
               message(paste0(step0 - step1, " probes were removed while mapping probes to genes as non-mapped probes or non-uniqely mapped probes"))
@@ -39,7 +39,7 @@ setMethod("collapseGenes", c("ANY", "character"),
               logGE <- logDataset(ge)
               # TODO: needs speed up
               bestProbes <- sapply(geneToProbes, function(probes) {
-                  subset <- logGE[probes, , drop=F]
+                  subset <- logGE[probes, , drop=FALSE]
                   probes[which.max(rowMeans(subset))]
               })
 

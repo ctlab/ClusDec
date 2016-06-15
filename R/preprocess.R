@@ -33,7 +33,7 @@ setMethod("preprocessDataset", c("matrix", "missing"),
               # finding top genes in log scale
               dataset <- logDataset(dataset)
               topGenes <- min(topGenes, nrow(dataset))
-              topRows <- order(rowSums(dataset), decreasing = T)[1:topGenes]
+              topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
               topDataset <- dataset[topRows, ]
               # clustering in linear space
               topDataset <- linearizeDataset(topDataset)
@@ -55,7 +55,7 @@ setMethod("preprocessDataset", c("character", "missing"),
                   preprocessDataset(dataset, geneSymbol="Gene Symbol", samples=NULL, ...)
               } else {
                   message(paste0("Trying to get dataset from public GEO dataset ", dataset))
-                  gse <- getGSE(dataset, verbose=T)
+                  gse <- getGSE(dataset, verbose=TRUE)
 
                   dataset <- exprs(gse)
 
@@ -63,7 +63,7 @@ setMethod("preprocessDataset", c("character", "missing"),
                       dataset <- dataset[, samples]
                   }
 
-                  fdata <- fData(gse)[, geneSymbol, drop=F]
+                  fdata <- fData(gse)[, geneSymbol, drop=FALSE]
                   dataset <- collapseGenes(dataset, fdata)
 
                   preprocessDataset(dataset, geneSymbol="Gene Symbol", samples=NULL, ...)

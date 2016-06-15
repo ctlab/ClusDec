@@ -24,11 +24,11 @@ setMethod("heatmapClusters", c("matrix"), function(dataset) {
         toDraw <- norm.length.matrix(dataset_ordered[, 2:ncol(dataset_ordered)])
         toDraw <- norm.relative.matrix(toDraw)
 
-        annotationRow <- as.data.frame(dataset[, 1, drop=F])
+        annotationRow <- as.data.frame(dataset[, 1, drop=FALSE])
         class(annotationRow[, 1]) <- "character"
 
         pheatmap(toDraw, annotation_row = annotationRow,
-                 cluster_rows = F, cluster_cols = F, show_rownames = F,
+                 cluster_rows = FALSE, cluster_cols = FALSE, show_rownames = FALSE,
                  color = colorRampPalette(c("blue", "white", "red"))(50))
     } else {
         dataset_ordered <- dataset[order(dataset[, 1]), ]
