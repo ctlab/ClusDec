@@ -1,7 +1,7 @@
 # Sample .travis.yml for R projects
 
 language: r
-r: 
+r:
     - bioc-devel
     - bioc-release
 # warnings_are_errors: true
@@ -21,4 +21,5 @@ after_script:
   - Rscript -e "library(BiocCheck); BiocCheck(\"${FILE}\")"
 
 after_success:
+      - bash <(curl -s https://codecov.io/bash)
       - Rscript -e 'covr::codecov()'
