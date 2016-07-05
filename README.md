@@ -1,13 +1,13 @@
-![Travis-CI Build Status](https://api.travis-ci.org/ctlab/ClusDec.svg?branch=master)](https://travis-ci.org/ctlab/ClusDec)
+[![Travis-CI Build Status](https://api.travis-ci.org/ctlab/ClusDec.svg?branch=master)](https://travis-ci.org/ctlab/ClusDec)
 [![codecov](https://codecov.io/gh/ctlab/ClusDec/branch/master/graph/badge.svg)](https://codecov.io/gh/ctlab/ClusDec)
 
 
 # ClusDec
 An R-package implementing de novo deconvolution method that allows identification of individual cell types in the mixture without knowing either cell types proportions or their corresponding cell-specific markers.
 
-The basic idea of ClusDec is to find clusters of genes with linear expression profiles that then will be used as putative signatures for Digital Sortiing Algorithm (DSA) described in [(Zhong et al. BMC Bioinformatics 2013, 14:89)][http://dx.doi.org/10.1186/1471-2105-14-89].
+The basic idea of ClusDec is to find clusters of genes with linear expression profiles that then will be used as putative signatures for Digital Sortiing Algorithm (DSA) described in [(Zhong et al. BMC Bioinformatics 2013, 14:89)](http://dx.doi.org/10.1186/1471-2105-14-89).
 
-The basic workflow consists several steps: preprocessing (including clustering), evaluating accuracies of combination of clusters and then using best combination as putative signatures for DSA algorithm (link).
+The basic workflow consists several steps: preprocessing (including clustering), evaluating accuracies of combination of clusters and then using best combination as putative signatures for DSA.
 
 
 ## Installation
