@@ -21,5 +21,4 @@ after_script:
   - Rscript -e "library(BiocCheck); BiocCheck(\"${FILE}\")"
 
 after_success:
-      - bash <(curl -s https://codecov.io/bash)
-      - Rscript -e 'covr::codecov()'
+      - Rscript -e 'library(covr);codecov()'
