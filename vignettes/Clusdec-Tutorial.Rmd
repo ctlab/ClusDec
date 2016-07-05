@@ -34,7 +34,7 @@ head(proportionsLiverBrainLung[, 10:15])
 ```
 
 
-We don't take first 9 samples: it is pure samples, and we only leave mixed samples.
+We don't take first 9 samples: these are pure samples, and we only leave mixed samples.
 ```{r, message=FALSE, warning=FALSE}
 mixedGed <- datasetLiverBrainLung[, 10:42]
 mixedProportions <- proportionsLiverBrainLung[, 10:42]
