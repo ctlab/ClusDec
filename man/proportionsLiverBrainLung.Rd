@@ -4,7 +4,7 @@
 \name{proportionsLiverBrainLung}
 \alias{proportionsLiverBrainLung}
 \title{GSE19830 proportions}
-\format{An object of class \code{"matrix"}}
+\format{An object of class \code{'matrix'}}
 \source{
 \href{http://qtlarchive.org/db/q?pg=projdetails&proj=moore_2013b}{QTL Archive}
 }
@@ -34,11 +34,11 @@ GSM495248-GSM495250 65 % Liver / 34 % Brain / 1 % Lung
 \examples{
 data(proportionsLiverBrainLung)
 mixedProportions <- proportionsLiverBrainLung[, 10:42]
-barplot(mixedProportions, main="Proprotions of tissues in samples", col=c("#00BA38","#F8766D", "#619CFF"),
+barplot(mixedProportions, main='Proprotions of tissues in samples', col=c('#00BA38','#F8766D', '#619CFF'),
         legend = rownames(mixedProportions))
 }
 \references{
-Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type–specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
+Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type-specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
 (\href{http://www.ncbi.nlm.nih.gov/pubmed/20208531}{PubMed})
 }
 \keyword{datasets}

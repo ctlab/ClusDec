@@ -22,11 +22,11 @@
 #'
 #' @usage data(datasetLiverBrainLung)
 #'
-#' @format An object of class \code{"data.frame"}
+#' @format An object of class \code{'data.frame'}
 #'
 #' @keywords datasets
 #'
-#' @references Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type–specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
+#' @references Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type-specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
 #' (\href{http://www.ncbi.nlm.nih.gov/pubmed/20208531}{PubMed})
 #'
 #' @source \href{http://qtlarchive.org/db/q?pg=projdetails&proj=moore_2013b}{QTL Archive}

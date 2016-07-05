@@ -7,7 +7,7 @@
 preprocessGSE(geoAccesion, annotate = TRUE, ...)
 }
 \arguments{
-\item{geoAccesion}{e.g "GSE19830"}
+\item{geoAccesion}{e.g 'GSE19830'}
 
 \item{annotate}{annotate with feature data from provided geo platform}
 

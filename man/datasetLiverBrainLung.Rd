@@ -4,7 +4,7 @@
 \name{datasetLiverBrainLung}
 \alias{datasetLiverBrainLung}
 \title{GSE19830 dataset}
-\format{An object of class \code{"data.frame"}}
+\format{An object of class \code{'data.frame'}}
 \source{
 \href{http://qtlarchive.org/db/q?pg=projdetails&proj=moore_2013b}{QTL Archive}
 }
@@ -37,7 +37,7 @@ mixedSamples <- datasetLiverBrainLung[, 10:42]
 clustered <- preprocessDataset(mixedSamples)
 }
 \references{
-Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type–specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
+Shen-Orr SS, Tibshirani R, Khatri P, et al. cell type-specific gene expression differences in complex tissues. Nature methods. 2010;7(4):287-289. doi:10.1038/nmeth.1439.
 (\href{http://www.ncbi.nlm.nih.gov/pubmed/20208531}{PubMed})
 }
 \keyword{datasets}

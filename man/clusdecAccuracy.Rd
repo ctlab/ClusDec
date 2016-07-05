@@ -19,4 +19,14 @@ matrix, matrix of estimated accuracy (log Frobenius norm) for every combination
 \description{
 Accuracy for all combination of clusters
 }
+\examples{
+data('datasetLiverBrainLung')
+preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
+
+\dontrun{
+accuracy <- clusdecAccuracy(preprocessed, 3, cores=2) # using 2 CPU cores
+}
+
+}
 

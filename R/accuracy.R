@@ -5,21 +5,32 @@
 #' @param cores numeric, how many cores to use
 #'
 #' @return matrix, matrix of estimated accuracy (log Frobenius norm) for every combination
+#'
+#' @examples
+#' data('datasetLiverBrainLung')
+#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
+#'
+#' \dontrun{
+#' accuracy <- clusdecAccuracy(preprocessed, 3, cores=2) # using 2 CPU cores
+#' }
+#'
 #' @export
-clusdecAccuracy <- function(dataset, cellTypesNumber, cores=1) {
+clusdecAccuracy <- function(dataset, cellTypesNumber, cores = 1) {
     clusterNumber <- max(dataset[, 1])
     datasetGE <- dataset[, 2:ncol(dataset)]
     clustering <- as.numeric(dataset[, 1])
-
+    
     iteration <- function(cls) {
-        evalClusters(datasetGE, clustering, cls,  clusterNumber, cellTypesNumber)
+        evalClusters(datasetGE, clustering, cls, clusterNumber, cellTypesNumber)
     }
-
+    
     cmb <- combn(1:clusterNumber, cellTypesNumber)
     lcmb <- lapply(seq_len(ncol(cmb)), function(i) c(cmb[, i]))
-
-    results <- do.call(rbind, mclapply(lcmb, iteration, mc.cores=cores))
-    colnames(results)<- c(paste0("Cluster ", 1:cellTypesNumber), "sumToOneError", "LogFrobNorm")
+    
+    results <- do.call(rbind, mclapply(lcmb, iteration, mc.cores = cores))
+    colnames(results) <- c(paste0("Cluster ", 1:cellTypesNumber), "sumToOneError", 
+        "LogFrobNorm")
     results
 }
 
@@ -42,14 +53,16 @@ clusdecAccuracy <- function(dataset, cellTypesNumber, cores=1) {
 evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumber) {
     dsaResults <- runDSA(dataset, clustering, cls)
     proportions <- dsaResults$H
-    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))), "F")
-
+    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))), 
+        "F")
+    
     evaluated <- (dsaResults$W %*% dsaResults$H)[rownames(dataset), ]
-
+    
     logFrobNorm <- logFrobNormAccuracy(dataset, evaluated)
-
+    
     result <- c(cls, sumToOneError, logFrobNorm)
-    message(paste0("Deconvolving by clusters  ", paste(cls, collapse = " "), ". Accuracy is ", logFrobNorm))
+    message(paste0("Deconvolving by clusters  ", paste(cls, collapse = " "), ". Accuracy is ", 
+        logFrobNorm))
     return(result)
 }
 
@@ -62,6 +75,12 @@ evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumbe
 #' @param clusters numeric vector, clusters to use as putative signatures
 #'
 #' @return list with matrices W and H
+#'
+#' @examples
+#' data('datasetLiverBrainLung')
+#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' results <- deconvolveClusters(preprocessed, c(1, 2, 4)) # use clusters 1, 2 and 4 as putative signatures
+#'
 #' @export
 deconvolveClusters <- function(dataset, clusters) {
     message(paste0("Deconvolving dataset using clusters: ", paste(clusters, collapse = " ")))
@@ -81,6 +100,14 @@ deconvolveClusters <- function(dataset, clusters) {
 #' @param accuracy matrix, given accuracy table, result of clusdecAccuracy function
 #'
 #' @return list with matrices W and H
+#'
+#' @examples
+#' data('datasetLiverBrainLung')
+#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
+#' results <- chooseBest(preprocessed, accuracy) # choose best combination of clusters as putative sigantures
+#'
+#'
 #' @export
 chooseBest <- function(dataset, accuracy) {
     logFrobNorm <- ncol(accuracy)

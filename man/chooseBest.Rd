@@ -18,4 +18,12 @@ list with matrices W and H
 Chooses best combination of clusters in accuracy table and then
 runs DSA using this combination of clusters as putative signatures
 }
+\examples{
+data('datasetLiverBrainLung')
+preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
+results <- chooseBest(preprocessed, accuracy) # choose best combination of clusters as putative sigantures
+
+
+}
 

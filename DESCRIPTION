@@ -1,18 +1,22 @@
 Package: clusdec
 Type: Package
-Title: Cell Type Deconvolution by Clustering Approach
+Title: Clustering approach to solve complete Deconvolution problem
 Version: 0.99.1
-Author: Konstantin Zaitsev
+Authors@R: person("Konstantin", "Zaitsev",
+    email = "zayats1812@mail.ru", role = c("aut", "cre"))
 Maintainer: Konstantin Zaitsev <zayats1812@mail.ru>
-Description: Performs deconvolution of gene expression dataset without prior
-    knowledge of cell-specific markers
-License: GPL v.2.0
+Description: The package implements an algorithm to perform deconvolution
+    of gene expression dataset without prior
+    knowledge of cell-specific markers.
+biocViews: Software, GeneExpression, Clustering
+License: MIT + file LICENCE
 LazyData: TRUE
 VignetteBuilder: knitr
+Depends:
+    R (>= 3.0)
 Imports:
     GEOquery,
     amap,
-    RColorBrewer,
     corpcor,
     NMF
 Suggests:

@@ -12,16 +12,14 @@ preprocessDataset(dataset, k = 10, annotation = NULL,
 
 \item{k}{number of clusters to perform Kmeans, default value is 10}
 
-\item{geneSymbol}{column from annotation to collapse the genes, deafult value is "Gene Symbol"}
+\item{annotation}{dataframe, matrix, named vector with annotation to probes}
+
+\item{geneSymbol}{column from annotation to collapse the genes, deafult value is 'Gene Symbol'}
 
 \item{samples}{character vector of samples. If column were not in samples, it would be excluded from analysis.
 Default value is NULL, which takes every sample from dataset}
 
 \item{topGenes}{integer How many genes include in analysis. We suppose to include only expressed genes. Default value is 10000}
-
-\item{annotaion}{dataframe, matrix, named vector with annotation to probes}
-
-\item{...}{}
 }
 \value{
 clustered dataset, matrix, first column identifies cluster of the row
@@ -32,5 +30,12 @@ Preprocesses given dataset. Preprocessing consists of 3 major steps:
    It's common technique in microarray data analysis.
 2) If needed, only highly expressed genes are taken for further analysis. (Say hello to noize reduction)
 3) All genes are clustered with Kmeans using cosine simillarity as distance.
+}
+\examples{
+data('datasetLiverBrainLung')
+prep <- preprocessDataset(datasetLiverBrainLung)
+prep <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+prep <- preprocessDataset(datasetLiverBrainLung, topGenes=6000) # leave only top 6k genes
+
 }
 

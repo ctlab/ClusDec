@@ -7,7 +7,12 @@
 plotProportions(..., pnames = NULL)
 }
 \arguments{
-\item{proportions}{matricies, data frames or NMF objects of estimated proportions or paths to file}
+\item{...}{matricies, data frames, NMF objects of estimated proportions or paths to file}
+
+\item{pnames}{experiment titles}
+}
+\value{
+ggplot object
 }
 \description{
 Draws a plot of estimated proprotions
@@ -15,12 +20,18 @@ If ggplot2 and reshape2 are installed will use them and return ggplot object
 Otherwise will use standart R functions
 }
 \examples{
-\dontrun{
-# lets assume we already have clustered dataset and estimated accuracy
-deconvolutionResults <- chooseBest(dataset, accuracy)
-plotProportions(deconvolutionResults)
-plotProportions(coef(deconvolutionResults)) # same as previous call
-plotProportions("/path/to/deconvolution_results.tsv")
-}
+set.seed(31)
+data('datasetLiverBrainLung')
+mixed <- datasetLiverBrainLung[, 10:42]
+preprocessed <- preprocessedrocessDataset(mixed, k=5) # 5 clusters
+accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
+results <- chooseBest(preprocessed, accuracy) # choose best combination of clusters as putative sigantures
+
+plotProportions(results$H) # plotting proportions
+
+data('proportionsLiverBrainLung') # or we can compare with actual mixed proportions
+mixedProportions <- proportionsLiverBrainLung[, 10:42]
+plotProportions(results$H, mixedProportions, pnames=c('ClusDec estimated', 'Actual'))
+
 }
 

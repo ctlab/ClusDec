@@ -7,70 +7,77 @@
 #' 3) All genes are clustered with Kmeans using cosine simillarity as distance.
 #'
 #' @param dataset matrix, data.frame, path to file or GSE accession with expression data
-#' @param annotaion dataframe, matrix, named vector with annotation to probes
+#' @param annotation dataframe, matrix, named vector with annotation to probes
 #' @param k number of clusters to perform Kmeans, default value is 10
-#' @param geneSymbol column from annotation to collapse the genes, deafult value is "Gene Symbol"
+#' @param geneSymbol column from annotation to collapse the genes, deafult value is 'Gene Symbol'
 #' @param samples character vector of samples. If column were not in samples, it would be excluded from analysis.
 #' Default value is NULL, which takes every sample from dataset
 #' @param topGenes integer How many genes include in analysis. We suppose to include only expressed genes. Default value is 10000
-#' @param ...
 #'
 #' @return clustered dataset, matrix, first column identifies cluster of the row
+#'
+#' @examples
+#' data('datasetLiverBrainLung')
+#' prep <- preprocessDataset(datasetLiverBrainLung)
+#' prep <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' prep <- preprocessDataset(datasetLiverBrainLung, topGenes=6000) # leave only top 6k genes
+#'
 #' @export
-preprocessDataset <- function(dataset, k=10, annotation=NULL, geneSymbol="Gene Symbol", samples=NULL, topGenes=10000) {
+preprocessDataset <- function(dataset, k = 10, annotation = NULL, geneSymbol = "Gene Symbol", 
+    samples = NULL, topGenes = 10000) {
     if (inherits(dataset, "character")) {
         if (file.exists(dataset)) {
             message("File ", dataset, " exists")
             message("Reading dataset from file ", dataset)
             dataset <- read.table.mine(dataset)
-        } else{
+        } else {
             stop("File does not exist: ", dataset)
         }
     }
     if (inherits(dataset, "data.frame")) {
         dataset <- as.matrix(dataset)
     }
-
+    
     if (!inherits(dataset, "matrix")) {
         stop("Unsupported type of dataset: please ensure first argument is matrix, data.frame, path to file or GSE accesssion")
     }
-
+    
     # sample selection
     if (!is.null(samples)) {
         dataset <- dataset[, samples]
     }
-
+    
     # annotating if necessary
     if (!is.null(annotation)) {
-        fdata <- annotation[, geneSymbol, drop=FALSE]
+        fdata <- annotation[, geneSymbol, drop = FALSE]
         dataset <- collapseGenes(dataset, fdata)
     }
-
+    
     # finding top genes in log scale
     dataset <- logDataset(dataset)
     topGenes <- min(topGenes, nrow(dataset))
     topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
     topDataset <- dataset[topRows, ]
-
+    
     # clustering in linear space
     topDataset <- linearizeDataset(topDataset)
     clustered <- clusterCosine(topDataset, k)
     return(clustered)
-
+    
 }
 
 #' Preprocess GSE Dataset
 #'
 #' Downloads GSE dataset by GEO accession and performs preprocessing
 #'
-#' @param geoAccesion e.g "GSE19830"
+#' @param geoAccesion e.g 'GSE19830'
 #' @param annotate annotate with feature data from provided geo platform
 #' @param ... arguments further passed to preprocessDataset
 #'
 #' @return clustered dataset, matrix, first column identifies cluster of the row
 #' @import GEOquery
 #' @export
-preprocessGSE <- function(geoAccesion, annotate=TRUE, ...) {
+preprocessGSE <- function(geoAccesion, annotate = TRUE, ...) {
     gse <- getGEO(geoAccesion)
     if (length(gse) > 1) {
         stop("This GSE has multiple expression sets. It's probably multiseries. Provide single series experiment")
@@ -78,11 +85,11 @@ preprocessGSE <- function(geoAccesion, annotate=TRUE, ...) {
     gse <- gse[[1]]
     expressionData <- exprs(gse)
     if (annotate) {
-        preprocessDataset(expressionData, annotation=fData(gse), ...)
+        preprocessDataset(expressionData, annotation = fData(gse), ...)
     } else {
         preprocessDataset(expressionData, ...)
     }
-
-
+    
+    
 }
 

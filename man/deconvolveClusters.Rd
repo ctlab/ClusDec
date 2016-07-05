@@ -17,4 +17,10 @@ list with matrices W and H
 \description{
 Runs DSA with  given clusters as putative signatures
 }
+\examples{
+data('datasetLiverBrainLung')
+preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+results <- deconvolveClusters(preprocessed, c(1, 2, 4)) # use clusters 1, 2 and 4 as putative signatures
+
+}
 
