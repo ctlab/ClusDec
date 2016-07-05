@@ -13,7 +13,7 @@ License: MIT + file LICENCE
 LazyData: TRUE
 VignetteBuilder: knitr
 Depends:
-    R (>= 3.0)
+    R (>= 3.3)
 Imports:
     GEOquery,
     amap,
