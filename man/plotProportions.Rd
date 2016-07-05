@@ -23,7 +23,7 @@ Otherwise will use standart R functions
 set.seed(31)
 data('datasetLiverBrainLung')
 mixed <- datasetLiverBrainLung[, 10:42]
-preprocessed <- preprocessedrocessDataset(mixed, k=5) # 5 clusters
+preprocessed <- preprocessDataset(mixed, k=5) # 5 clusters
 accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
 results <- chooseBest(preprocessed, accuracy) # choose best combination of clusters as putative sigantures
 
