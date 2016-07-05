@@ -5,6 +5,7 @@
 #' @param dataset gene expression matrix
 #' @param genes, list with putative signatures for DSA algorithm
 #' @import NMF
+#' @import corpcor
 #'
 #' @return deconvolution results, list with H and W matrices
 fastDSA <- function(dataset, genes) {

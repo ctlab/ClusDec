@@ -13,6 +13,7 @@ Imports:
     GEOquery,
     amap,
     RColorBrewer,
+    corpcor,
     NMF
 Suggests:
     BiocStyle,
