@@ -12,7 +12,7 @@ deconvolveClusters(dataset, clusters)
 \item{clusters}{numeric vector, clusters to use as putative signatures}
 }
 \value{
-NMF object, deconvolution results
+list with matrices W and H
 }
 \description{
 Runs DSA with  given clusters as putative signatures

@@ -41,15 +41,12 @@ clusdecAccuracy <- function(dataset, cellTypesNumber, cores=1) {
 #' @return vector of cluster, sum-to-one error and log frobenius norm
 evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumber) {
     dsaResults <- runDSA(dataset, clustering, cls)
-    proportions <- coef(dsaResults)
+    proportions <- dsaResults$H
     sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))), "F")
 
-    evaluated <- (basis(dsaResults) %*% coef(dsaResults))[rownames(dataset), ]
+    evaluated <- (dsaResults$W %*% dsaResults$H)[rownames(dataset), ]
 
-    logEval = log2(evaluated + 1)
-    logDataset = log2(dataset + 1)
-
-    logFrobNorm <- norm(logDataset - logEval, "F")
+    logFrobNorm <- logFrobNormAccuracy(dataset, evaluated)
 
     result <- c(cls, sumToOneError, logFrobNorm)
     message(paste0("Deconvolving by clusters  ", paste(cls, collapse = " "), ". Accuracy is ", logFrobNorm))
@@ -64,16 +61,14 @@ evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumbe
 #' @param dataset matrix, given dataset to perform deconvolution
 #' @param clusters numeric vector, clusters to use as putative signatures
 #'
-#' @return NMF object, deconvolution results
-#' @import NMF
-#' @import CellMix
+#' @return list with matrices W and H
 #' @export
 deconvolveClusters <- function(dataset, clusters) {
     message(paste0("Deconvolving dataset using clusters: ", paste(clusters, collapse = " ")))
     datasetGE <- dataset[, 2:ncol(dataset)]
     clustering <- as.numeric(dataset[, 1])
     results <- runDSA(datasetGE, clustering, clusters)
-    rownames(coef(results)) <- paste0("Cluster ", clusters)
+    rownames(results$H) <- paste0("Cluster ", clusters)
     results
 }
 
@@ -85,11 +80,17 @@ deconvolveClusters <- function(dataset, clusters) {
 #' @param dataset matrix, given dataset to perform deconvolution
 #' @param accuracy matrix, given accuracy table, result of clusdecAccuracy function
 #'
-#' @return NMF object, deconvolution results
+#' @return list with matrices W and H
 #' @export
 chooseBest <- function(dataset, accuracy) {
     logFrobNorm <- ncol(accuracy)
     cellTypes <- ncol(accuracy) - 2
     accuracy <- accuracy[order(accuracy[, logFrobNorm]), ]
     deconvolveClusters(dataset, accuracy[1, 1:cellTypes])
+}
+
+logFrobNormAccuracy <- function(data1, data2) {
+    data1 <- logDataset(data1)
+    data2 <- logDataset(data2)
+    norm(data1 - data2, "F")
 }

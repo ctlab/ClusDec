@@ -12,7 +12,7 @@ chooseBest(dataset, accuracy)
 \item{accuracy}{matrix, given accuracy table, result of clusdecAccuracy function}
 }
 \value{
-NMF object, deconvolution results
+list with matrices W and H
 }
 \description{
 Chooses best combination of clusters in accuracy table and then

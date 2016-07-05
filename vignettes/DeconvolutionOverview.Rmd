@@ -9,27 +9,68 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## Heterogenity of samples
+<!-- ## Heterogenity of samples -->
+<!-- Samples in biological data are often heterogenious. -->
+<!-- Blood for example. -->
+<!-- More text incoming. -->
 
-Samples in biological data are often heterogenious.
-
-Blood for example.
-
-More text incoming.
-
-
-## Deconvolution problem
+## Mixing process: linear model
 
 Suppose that we want to mix some cell types. Let $W$ be an $n \times c$ matrix where $n$ is the number of genes and $c$ is the number of cell types. Matrix $W$ describes how every gene is expressed in concrete cell type. Let $H$ be an $c \times m$ matrix where $m$ is the number of samples we want to mix. Matrix $H$ describes in what proportions (frequencies) we want to mix our cell types, hence the sum of every column in $H$ has to be equal to one.
 
 Mixing process can be modeled using linear model:
-$$ X = W \times H$$
+$$ X = W \times H $$
 where resulting $n \times m$ matrix describes how each gene is expressed in the resuling heterogenious mix.
 
-<br><br>
+For example if we wanted to mix brain and liver in three samples: pure brain, 50% / 50% and pure liver, our matrix H would look like
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+H = matrix(c(1.0, 0.0, 0.5, 0.5, 0.0, 1.0), nrow=2, ncol=3)
+colnames(H) <- c("Sample 1", "Sample 2", "Sample 3")
+rownames(H) <- c("Brain", "Liver")
+H
+```
 
-Deconvolution problem is about opposite process. 
+if we also knew how some genes are expressed in brain and liver, our matrix W would look like
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(clusdec)
+data("datasetLiverBrainLung")
+W = 2^datasetLiverBrainLung[1:6, c(4, 1)]
+colnames(W) <- c("Brain", "Liver")
+W
+```
+then mixing processing would be modeled as simple matrix multiplication:
+```{r, message=FALSE, warning=FALSE}
+X <- W %*% H
+X
+```
 
-Observed gene expression matrix $X$ is given to us and we want to find such matrices $W$ and $H$ that
+## Deconvolution
 
-$$ O \approx W \times H$$
+Deconvolution is opposite process. 
+
+Observed gene expression matrix $X$ is given and we want to find such matrices $W$ and $H$ that
+
+$$ X \approx W \times H $$
+
+where $X$, $W$ and $H$ are nonnegative matricies, where sum of every column of $H$ is close to one. There are a lot of methods that allow us to do such factorization, but we want to find biologically meaningful matrices $W$ and $H$.
+
+If we know more information other than $X$ (e.g. we might know matrices $W$ or $H$, or we might know some signature genes for cell types that are in the mix) we will call it **partial deconvolution problem**. There are a lot of methods developed for solving **partial deconvolution problem**: they use different approaches and require different additional information.
+
+If only X is known we will call it **complete deconvolution problem**. And that's what we are going to solve.
+
+## Signature genes
+
+In terms of deconvolution we are going to call gene **signature** if it is higly expressed in only one cell type in given experiment. Knowledge of such genes allows to perform pretty sensitive deconvolution using DSA algorithm. 
+
+## ClusDec
+
+Main idea of ClusDec is to find such genes that may be signatures for cell types in the mix.
+
+## Accuracy
+
+To decide which combination of clusters is better as putative sigantures we have to introduce a way to estimate accuracy of deconvolution. Lets assume we have already found such matrices $W$ and $H$ that 
+$$ X \approx W \times H $$
+
+and we want to estimate how good this factorization is. Let $\tilde{X} = W \times H$, so the most natural way is comparison of the matrices $X$ and $\tilde{X}$. Here we introduce the accuracy of deconvolution:
+
+$$ accuracy(X, \tilde{X}) = || log(X) - log(\tilde{X}) ||_F $$

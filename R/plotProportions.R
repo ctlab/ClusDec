@@ -15,8 +15,8 @@
 #'}
 #'@export
 plotProportions <- function(..., pnames=NULL) {
-    requireNamespace(ggplot2)
-    requireNamespace(reshape2)
+    requireNamespace("ggplot2")
+    requireNamespace("reshape2")
 
 
     proportions <- list(...)
@@ -39,21 +39,21 @@ plotProportions <- function(..., pnames=NULL) {
 
 
     cellTypes <- nrow(proportions[[1]])
-    results.m <- melt(proportions)
+    results.m <- reshape2::melt(proportions)
     results.m[, 4] <- as.factor(results.m[, 4])
 
-    gplot <-ggplot(results.m, aes(x=as.numeric(Var2), y=value, fill=Var1, color=L1)) +
-            geom_line() +
-            geom_point() +
-            scale_x_discrete(labels=colnames(proportions[[1]])) +
-            facet_grid(Var1~.) + ylab("proportions") + ylim(0, 1.1) + theme_bw() +
-            theme(axis.title.x = element_blank(),
-                  axis.text.x  = element_text(angle=45, hjust=1)) + guides(fill=FALSE)
+    gplot <- ggplot2::ggplot(results.m, ggplot2::aes(x=as.numeric(Var2), y=value, fill=Var1, color=L1)) +
+        ggplot2::geom_line() +
+        ggplot2::geom_point() +
+        ggplot2::scale_x_discrete(labels=colnames(proportions[[1]])) +
+        ggplot2::facet_grid(Var1~.) + ggplot2::ylab("proportions") + ggplot2::ylim(0, 1.1) + ggplot2::theme_bw() +
+        ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                  axis.text.x  = ggplot2::element_text(angle=45, hjust=1)) + ggplot2::guides(fill=FALSE)
     if (length(proportions) > 1) {
-        gplot <- gplot + theme(legend.title = element_blank(), legend.position="top")
+        gplot <- gplot + ggplot2::theme(legend.title = ggplot2::element_blank(), legend.position="top")
 
     } else {
-        gplot <- gplot + theme(legend.position="none")
+        gplot <- gplot + ggplot2::theme(legend.position="none")
     }
     gplot
 }

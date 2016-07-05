@@ -79,3 +79,12 @@ createReport <- function(dataset, accuracy, where=".") {
     write.table.mine(basis(results), "basis.tsv")
     write.table.mine(coef(results), "coef.tsv")
 }
+
+is_logscale <- function(x) {
+    qx <- quantile(as.numeric(x))
+    if (qx[5] - qx[1] > 100 || qx[5] > 100) {
+        return(FALSE)
+    } else {
+        return(TRUE)
+    }
+}

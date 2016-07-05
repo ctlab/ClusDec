@@ -10,7 +10,7 @@ License: GPL v.2.0
 LazyData: TRUE
 VignetteBuilder: knitr
 Imports:
-    CellMix,
+    GEOquery,
     amap,
     RColorBrewer,
     NMF

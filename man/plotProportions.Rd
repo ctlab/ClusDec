@@ -4,14 +4,14 @@
 \alias{plotProportions}
 \title{Draw a plot of estimated proportions}
 \usage{
-plotProportions(proportions)
+plotProportions(..., pnames = NULL)
 }
 \arguments{
-\item{proportions}{matrix, data.frame or NMF object of estimated proportions or path to file}
+\item{proportions}{matricies, data frames or NMF objects of estimated proportions or paths to file}
 }
 \description{
 Draws a plot of estimated proprotions
-If ggplot2 and reshape2 are presented will use them and return ggplot object
+If ggplot2 and reshape2 are installed will use them and return ggplot object
 Otherwise will use standart R functions
 }
 \examples{

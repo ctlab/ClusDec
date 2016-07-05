@@ -13,41 +13,53 @@ vignette: >
 
 Here we introduce ClustDec, de novo deconvolution method that allows identification of individual cell types in the mixture without knowing either cell types proportions or their corresponding cell-specific markers.
 
-The basic idea of ClusDec is to find linear clusters that will then used as putative signatures for DSA Algorithm described in 1.
+The basic idea of ClusDec is to find clusters of genes with linear expression profiles that then will be used as putative signatures for DSA Algorithm described in 1.
 
-The basic workflow consists several steps: preprocessing including clustering, evaluating accuracies of combination of clusters and then using best combination as putative signatures for DSA algorithm (link)
+The basic workflow consists several steps: preprocessing (including clustering), evaluating accuracies of combination of clusters and then using best combination as putative signatures for DSA algorithm (link). Lets have a quick overview.
 
+Loading library and setting random seed for reproducibility
 ```{r, message=FALSE, warning=FALSE}
 library(clusdec)
 set.seed(31)
-
-data("datasetLiverBrainLung")
-mixedGed <- datasetLiverBrainLung[, 10:42]
-clusteredGed <- preprocessDataset(mixedGed, k=4) # 4 clusters
-accuracy <- clusdecAccuracy(clusteredGed, 3, cores=2) # assume 3 cell/tissue types
-results <- chooseBest(clusteredGed, accuracy)
-plotProportions(results)
 ```
 
 
-## Data in the package
-Two data sets are presented in this package and we are going to use this data sets in examples. 
-
-First data set is `datasetLiverBrainLung`. It is publicly available GEO dataset GSE19830^[Expression data from pure mixed brain, liver and lung to test feasability and sensitivity of statistical deconvolution] with microarray probes mapped to genes. This dataset is widely used for any deconvolution purposes. 
-You can access this dataset simply by using:
-```{r}
+Loading example data. First data set is `datasetLiverBrainLung`. It is publicly available GEO dataset GSE19830^[Expression data from pure mixed brain, liver and lung to test feasability and sensitivity of statistical deconvolution] with microarray probes mapped to genes. This dataset is widely used for any deconvolution purposes.  Second data set is `proportionsLiverBrainLung`. It contains actual proportions of liver, brain and lung in `datasetLiverBrainLung`.
+```{r, message=FALSE, warning=FALSE}
 data("datasetLiverBrainLung")
-head(datasetLiverBrainLung[, 1:5])
-```
-
-
-
-Second data set is `proportionsLiverBrainLung`. It contains actual proportions of liver, brain and lung in `datasetLiverBrainLung`.
-```{r}
 data("proportionsLiverBrainLung")
-head(proportionsLiverBrainLung[, 10:14])
+
+head(datasetLiverBrainLung[, 10:15])
+head(proportionsLiverBrainLung[, 10:15])
 ```
 
+
+We don't take first 9 samples: it is pure samples, and we only leave mixed samples.
+```{r, message=FALSE, warning=FALSE}
+mixedGed <- datasetLiverBrainLung[, 10:42]
+mixedProportions <- proportionsLiverBrainLung[, 10:42]
+```
+
+
+First step of ClusDec is preprocessing. It will cluster our dataset so genes in the same cluster will have linear expression profiles.
+```{r, message=FALSE, warning=FALSE}
+clusteredGed <- preprocessDataset(mixedGed, k=5)
+head(clusteredGed[, 1:6]) # every gene associated with cluster
+```
+
+
+Next step is evaluating accuracy of every combination of this clusters as putative sigantures for DSA algorithm. We assume our mix to consist of 3 cell types. The lower LogFrobNorm value you get -- better deconvolution goes.
+```{r, message=FALSE, warning=FALSE}
+accuracy <- clusdecAccuracy(clusteredGed, 3) 
+head(accuracy)
+```
+
+Now lets choose the best combination of clusters and perform deconvolution using them as putative signatures. Lets then plot results and compare them with actual proportions.
+```{r, message=FALSE, warning=FALSE}
+results <- chooseBest(clusteredGed, accuracy)
+plotProportions(results$H, mixedProportions[c(1, 3, 2), ],
+                pnames=c("Estimated", "Actual"))
+```
 
 
 ## Preprocessing
@@ -88,7 +100,7 @@ What should you see after preprocessing:
 
 ## Evaluating accuracy
 
-For now lets assume we fixed number of clusters $k$ as well as number of expected cell/tissue types $c$. Genes that lay in one (linear) cluster might be considered as signatures for cell/tissue type. Linearity is necessary but not sufficient condition. We can evaluate the accuracy of deconvolution if every combination of $k$ from $c$ clusters were assumed as signature genes for DSA algorithm. Function `clusdecAccuracy` takes several arguments: clustered dataset, number of expected cell types and processor cores to perform evaluation.
+For now lets assume we fixed number of clusters $k$ as well as number of expected cell types $c$. Genes that lay in one (linear) cluster might be considered as signatures for single cell type. Linearity is necessary but not sufficient condition. We can evaluate the accuracy of deconvolution if every combination of $k$ from $c$ clusters were assumed as signature genes for DSA algorithm. Function `clusdecAccuracy` takes several arguments: clustered dataset, number of expected cell types and CPU cores to perform evaluation.
 
 ```{r}
 accuracy <- clusdecAccuracy(clusteredGed, 3, cores=2)
@@ -97,4 +109,4 @@ accuracy
 
 Here we evaluate 2 values for every combination of our clusters.
 
-First value is sum to one error. It describes how good deconvolution proportions fit sum to one constraint. 
+First value is sum to one error. It describes how good deconvolution proportions fit sum to one constraint. And second value is logarithmic frobenius norm.

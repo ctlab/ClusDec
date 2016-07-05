@@ -1,5 +1,3 @@
-# new preprocessing
-
 #' Preprocess Dataset
 #'
 #' Preprocesses given dataset. Preprocessing consists of 3 major steps:
@@ -18,56 +16,73 @@
 #' @param ...
 #'
 #' @return clustered dataset, matrix, first column identifies cluster of the row
-#' @import CellMix
 #' @export
-setGeneric("preprocessDataset", function(dataset, annotaion, ...) {
-    standardGeneric("preprocessDataset")
-})
-setMethod("preprocessDataset", c("matrix", "missing"),
-          function(dataset, annotation, k=10, geneSymbol=NULL, samples=NULL, topGenes=10000) {
+preprocessDataset <- function(dataset, k=10, annotation=NULL, geneSymbol="Gene Symbol", samples=NULL, topGenes=10000) {
+    if (inherits(dataset, "character")) {
+        if (file.exists(dataset)) {
+            message("File ", dataset, " exists")
+            message("Reading dataset from file ", dataset)
+            dataset <- read.table.mine(dataset)
+        } else{
+            stop("File does not exist: ", dataset)
+        }
+    }
+    if (inherits(dataset, "data.frame")) {
+        dataset <- as.matrix(dataset)
+    }
 
-              if (!is.null(samples)) {
-                  dataset <- dataset[, samples]
-              }
+    if (!inherits(dataset, "matrix")) {
+        stop("Unsupported type of dataset: please ensure first argument is matrix, data.frame, path to file or GSE accesssion")
+    }
 
-              # finding top genes in log scale
-              dataset <- logDataset(dataset)
-              topGenes <- min(topGenes, nrow(dataset))
-              topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
-              topDataset <- dataset[topRows, ]
-              # clustering in linear space
-              topDataset <- linearizeDataset(topDataset)
-              clustered <- clusterCosine(topDataset, k)
-              return(clustered)
-          }
-)
-setMethod("preprocessDataset", c("data.frame", "missing"),
-          function(dataset, annotation, ...) {
-              dataset <- as.matrix(dataset)
-              preprocessDataset(dataset, ...)
-          }
-)
-setMethod("preprocessDataset", c("character", "missing"),
-          function(dataset, annotation, geneSymbol="Gene Symbol", samples=NULL, ...) {
-              if (file.exists(dataset)) {
-                  message(paste0("Reading dataset from file ", dataset))
-                  dataset <- read.table.mine(dataset)
-                  preprocessDataset(dataset, geneSymbol="Gene Symbol", samples=NULL, ...)
-              } else {
-                  message(paste0("Trying to get dataset from public GEO dataset ", dataset))
-                  gse <- getGSE(dataset, verbose=TRUE)
+    # sample selection
+    if (!is.null(samples)) {
+        dataset <- dataset[, samples]
+    }
 
-                  dataset <- exprs(gse)
+    # annotating if necessary
+    if (!is.null(annotation)) {
+        fdata <- annotation[, geneSymbol, drop=FALSE]
+        dataset <- collapseGenes(dataset, fdata)
+    }
 
-                  if (!is.null(samples)) {
-                      dataset <- dataset[, samples]
-                  }
+    # finding top genes in log scale
+    dataset <- logDataset(dataset)
+    topGenes <- min(topGenes, nrow(dataset))
+    topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
+    topDataset <- dataset[topRows, ]
 
-                  fdata <- fData(gse)[, geneSymbol, drop=FALSE]
-                  dataset <- collapseGenes(dataset, fdata)
+    # clustering in linear space
+    topDataset <- linearizeDataset(topDataset)
+    clustered <- clusterCosine(topDataset, k)
+    return(clustered)
 
-                  preprocessDataset(dataset, geneSymbol="Gene Symbol", samples=NULL, ...)
-              }
+}
 
-          }
-)
+#' Preprocess GSE Dataset
+#'
+#' Downloads GSE dataset by GEO accession and performs preprocessing
+#'
+#' @param geoAccesion e.g "GSE19830"
+#' @param annotate annotate with feature data from provided geo platform
+#' @param ... arguments further passed to preprocessDataset
+#'
+#' @return clustered dataset, matrix, first column identifies cluster of the row
+#' @import GEOquery
+#' @export
+preprocessGSE <- function(geoAccesion, annotate=TRUE, ...) {
+    gse <- getGEO(geoAccesion)
+    if (length(gse) > 1) {
+        stop("This GSE has multiple expression sets. It's probably multiseries. Provide single series experiment")
+    }
+    gse <- gse[[1]]
+    expressionData <- exprs(gse)
+    if (annotate) {
+        preprocessDataset(expressionData, annotation=fData(gse), ...)
+    } else {
+        preprocessDataset(expressionData, ...)
+    }
+
+
+}
+

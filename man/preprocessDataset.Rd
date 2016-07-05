@@ -4,14 +4,11 @@
 \alias{preprocessDataset}
 \title{Preprocess Dataset}
 \usage{
-preprocessDataset(dataset, annotaion, ...)
+preprocessDataset(dataset, k = 10, annotation = NULL,
+  geneSymbol = "Gene Symbol", samples = NULL, topGenes = 10000)
 }
 \arguments{
 \item{dataset}{matrix, data.frame, path to file or GSE accession with expression data}
-
-\item{annotaion}{dataframe, matrix, named vector with annotation to probes}
-
-\item{...}{}
 
 \item{k}{number of clusters to perform Kmeans, default value is 10}
 
@@ -21,6 +18,10 @@ preprocessDataset(dataset, annotaion, ...)
 Default value is NULL, which takes every sample from dataset}
 
 \item{topGenes}{integer How many genes include in analysis. We suppose to include only expressed genes. Default value is 10000}
+
+\item{annotaion}{dataframe, matrix, named vector with annotation to probes}
+
+\item{...}{}
 }
 \value{
 clustered dataset, matrix, first column identifies cluster of the row
