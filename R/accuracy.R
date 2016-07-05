@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' data('datasetLiverBrainLung')
-#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' preprocessed <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
 #' accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
 #'
 #' \dontrun{
@@ -20,16 +20,16 @@ clusdecAccuracy <- function(dataset, cellTypesNumber, cores = 1) {
     clusterNumber <- max(dataset[, 1])
     datasetGE <- dataset[, 2:ncol(dataset)]
     clustering <- as.numeric(dataset[, 1])
-    
+
     iteration <- function(cls) {
         evalClusters(datasetGE, clustering, cls, clusterNumber, cellTypesNumber)
     }
-    
+
     cmb <- combn(1:clusterNumber, cellTypesNumber)
     lcmb <- lapply(seq_len(ncol(cmb)), function(i) c(cmb[, i]))
-    
+
     results <- do.call(rbind, mclapply(lcmb, iteration, mc.cores = cores))
-    colnames(results) <- c(paste0("Cluster ", 1:cellTypesNumber), "sumToOneError", 
+    colnames(results) <- c(paste0("Cluster ", 1:cellTypesNumber), "sumToOneError",
         "LogFrobNorm")
     results
 }
@@ -53,15 +53,15 @@ clusdecAccuracy <- function(dataset, cellTypesNumber, cores = 1) {
 evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumber) {
     dsaResults <- runDSA(dataset, clustering, cls)
     proportions <- dsaResults$H
-    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))), 
+    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))),
         "F")
-    
+
     evaluated <- (dsaResults$W %*% dsaResults$H)[rownames(dataset), ]
-    
+
     logFrobNorm <- logFrobNormAccuracy(dataset, evaluated)
-    
+
     result <- c(cls, sumToOneError, logFrobNorm)
-    message(paste0("Deconvolving by clusters  ", paste(cls, collapse = " "), ". Accuracy is ", 
+    message(paste0("Deconvolving by clusters  ", paste(cls, collapse = " "), ". Accuracy is ",
         logFrobNorm))
     return(result)
 }
@@ -78,7 +78,7 @@ evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumbe
 #'
 #' @examples
 #' data('datasetLiverBrainLung')
-#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' preprocessed <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
 #' results <- deconvolveClusters(preprocessed, c(1, 2, 4)) # use clusters 1, 2 and 4 as putative signatures
 #'
 #' @export
@@ -103,7 +103,7 @@ deconvolveClusters <- function(dataset, clusters) {
 #'
 #' @examples
 #' data('datasetLiverBrainLung')
-#' preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+#' preprocessed <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
 #' accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
 #' results <- chooseBest(preprocessed, accuracy) # choose best combination of clusters as putative sigantures
 #'

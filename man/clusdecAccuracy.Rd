@@ -21,7 +21,7 @@ Accuracy for all combination of clusters
 }
 \examples{
 data('datasetLiverBrainLung')
-preprocessed <- preprocessedrocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
+preprocessed <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
 accuracy <- clusdecAccuracy(preprocessed, 3) # assuming 3 cell types
 
 \dontrun{
