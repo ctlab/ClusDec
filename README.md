@@ -81,5 +81,5 @@ plotProportions(results$H, mixedProportions[c(1, 3, 2), ],
                 pnames=c("Estimated", "Actual"))
 ```
 
-![proportions.png](https://dl.dropboxusercontent.com/u/38245921/ClusDec/proportions.png)
+![proportions.png](https://www.dropbox.com/s/mkc8vc9nxf97u8n/proportions.png?dl=0)
 
