@@ -12,9 +12,13 @@ biocViews: Software, GeneExpression, Clustering
 License: MIT + file LICENCE
 LazyData: TRUE
 VignetteBuilder: knitr
+LinkingTo: Rcpp, RcppArmadillo, BH
 Depends:
-    R (>= 3.3)
+    R (>= 3.3),
+    RcppArmadillo
 Imports:
+    Rcpp (>= 0.11.1),
+    RcppArmadillo (>= 0.4.200.0),
     GEOquery,
     amap,
     corpcor,

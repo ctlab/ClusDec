@@ -8,7 +8,6 @@
 #'
 #' @param dataset matrix, data.frame, path to file or GSE accession with expression data
 #' @param annotation dataframe, matrix, named vector with annotation to probes
-#' @param k number of clusters to perform Kmeans, default value is 10
 #' @param geneSymbol column from annotation to collapse the genes, deafult value is 'Gene Symbol'
 #' @param samples character vector of samples. If column were not in samples, it would be excluded from analysis.
 #' Default value is NULL, which takes every sample from dataset
@@ -23,8 +22,8 @@
 #' prep <- preprocessDataset(datasetLiverBrainLung, topGenes=6000) # leave only top 6k genes
 #'
 #' @export
-preprocessDataset <- function(dataset, k = 10, annotation = NULL, geneSymbol = "Gene Symbol", 
-    samples = NULL, topGenes = 10000) {
+preprocessDataset <- function(dataset, annotation = NULL, geneSymbol = "Gene Symbol",
+    samples = NULL, topGenes = 10000, topVar=FALSE) {
     if (inherits(dataset, "character")) {
         if (file.exists(dataset)) {
             message("File ", dataset, " exists")
@@ -37,33 +36,42 @@ preprocessDataset <- function(dataset, k = 10, annotation = NULL, geneSymbol = "
     if (inherits(dataset, "data.frame")) {
         dataset <- as.matrix(dataset)
     }
-    
+
     if (!inherits(dataset, "matrix")) {
         stop("Unsupported type of dataset: please ensure first argument is matrix, data.frame, path to file or GSE accesssion")
     }
-    
+
     # sample selection
     if (!is.null(samples)) {
         dataset <- dataset[, samples]
     }
-    
+
     # annotating if necessary
     if (!is.null(annotation)) {
         fdata <- annotation[, geneSymbol, drop = FALSE]
         dataset <- collapseGenes(dataset, fdata)
     }
-    
-    # finding top genes in log scale
-    dataset <- logDataset(dataset)
+
     topGenes <- min(topGenes, nrow(dataset))
-    topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
-    topDataset <- dataset[topRows, ]
-    
+
+    if (topVar) {
+        # getting genes with most variance coefficients
+        dataset <- linearizeDataset(dataset)
+        varCoefs <- apply(dataset, 1, function(r) sd(r) / mean(r))
+        topRows <- order(varCoefs, decreasing = TRUE)[1:topGenes]
+        topDataset <- dataset[topRows, ]
+    } else {
+        # finding top genes in log scale
+        dataset <- logDataset(dataset)
+        topRows <- order(rowSums(dataset), decreasing = TRUE)[1:topGenes]
+        topDataset <- dataset[topRows, ]
+    }
+
     # clustering in linear space
     topDataset <- linearizeDataset(topDataset)
-    clustered <- clusterCosine(topDataset, k)
-    return(clustered)
-    
+    # clustered <- clusterCosine(topDataset, k)
+    return(topDataset)
+
 }
 
 #' Preprocess GSE Dataset
@@ -89,7 +97,7 @@ preprocessGSE <- function(geoAccesion, annotate = TRUE, ...) {
     } else {
         preprocessDataset(expressionData, ...)
     }
-    
-    
+
+
 }
 

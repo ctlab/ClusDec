@@ -9,10 +9,11 @@
 #'
 #' @return deconvolution results, list with H and W matrices
 fastDSA <- function(dataset, genes) {
-    eigengenes <- do.call(rbind, lapply(genes, function(geneSet) colMeans(dataset[geneSet, 
+    eigengenes <- do.call(rbind, lapply(genes, function(geneSet) colMeans(dataset[geneSet,
         ])))
     eigenMultiplier <- fcnnls(t(eigengenes), matrix(1, ncol(eigengenes), 1))
-    H <- diag(as.numeric(eigenMultiplier$x)) %*% eigengenes
+    H <- diag(as.numeric(eigenMultiplier$x),
+              length(as.numeric(eigenMultiplier$x))) %*% eigengenes
     res <- .fcnnls(t(H), t(dataset), pseudo = TRUE)
     return(list(H = H, W = t(res$coef)))
 }

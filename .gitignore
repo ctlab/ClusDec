@@ -3,3 +3,6 @@ inst/doc
 *Rproj
 tests
 .Rproj.user
+src/*.so
+src/*.dll
+src/*.o

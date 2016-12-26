@@ -112,8 +112,8 @@ deconvolveClusters <- function(dataset, clusters) {
 chooseBest <- function(dataset, accuracy) {
     logFrobNorm <- ncol(accuracy)
     cellTypes <- ncol(accuracy) - 2
-    accuracy <- accuracy[order(accuracy[, logFrobNorm]), ]
-    deconvolveClusters(dataset, accuracy[1, 1:cellTypes])
+    accuracy <- accuracy[order(accuracy[, logFrobNorm]), , drop=F]
+    deconvolveClusters(dataset, accuracy[1, 1:cellTypes, drop=F])
 }
 
 logFrobNormAccuracy <- function(data1, data2) {
