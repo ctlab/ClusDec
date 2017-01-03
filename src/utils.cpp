@@ -21,7 +21,7 @@ List deconvolve(const arma::mat& mixedData,
                 const arma::mat& coefMatrix,
                 const arma::vec& coef,
                 int dims) {
-    //Rcout << coefMatrix;
+    // Rcout << coefMatrix;
     colvec planeTransformation = solve(coefMatrix.t(), vec(dims, fill::ones));
     // Rcout << planeTransformation;
     colvec abc = planeTransformation / coef;
@@ -34,6 +34,11 @@ List deconvolve(const arma::mat& mixedData,
     // Rcout << gg;
 
     mat props = fcnnls_c(pseudoBasis, gg);
+    mat props_neg = solve(pseudoBasis, gg);
+
+    // Rcout << props;
+    // Rcout << props_neg;
+
     mat a = props.t();
     mat b = mixedData.t();
 
@@ -44,7 +49,8 @@ List deconvolve(const arma::mat& mixedData,
     return List::create(
         _["basis"] = basis_results,
         _["proportions"] = props,
-        _["resutls"] = results
+        _["results"] = results,
+        _["props_neg"] = props_neg
     );
     // return List::create();
 }
@@ -80,7 +86,16 @@ double score(const arma::mat& mixedData,
              int dims) {
 
     mat cm = getCoefMatrix(par, dims);
-    mat results = deconvolve(mixedData, gg, cm, coef, dims)[2];
+    List r = deconvolve(mixedData, gg, cm, coef, dims);
+    mat props_neg = r[3];
+
+    double eps = 1e-8;
+
+    if (any(any(props_neg < -eps))) {
+        return datum::inf;
+    }
+
+    mat results = r[2];
     mat error = log2(mixedData + 1) - log2(results + 1);
     return sum(sum(pow(error, 2)));
 }

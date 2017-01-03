@@ -4,13 +4,11 @@
 \alias{preprocessDataset}
 \title{Preprocess Dataset}
 \usage{
-preprocessDataset(dataset, k = 10, annotation = NULL,
-  geneSymbol = "Gene Symbol", samples = NULL, topGenes = 10000)
+preprocessDataset(dataset, annotation = NULL, geneSymbol = "Gene Symbol",
+  samples = NULL, topGenes = 10000, topVar = FALSE)
 }
 \arguments{
 \item{dataset}{matrix, data.frame, path to file or GSE accession with expression data}
-
-\item{k}{number of clusters to perform Kmeans, default value is 10}
 
 \item{annotation}{dataframe, matrix, named vector with annotation to probes}
 

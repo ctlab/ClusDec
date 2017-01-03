@@ -84,14 +84,24 @@ preprocessDataset <- function(dataset, annotation = NULL, geneSymbol = "Gene Sym
 #'
 #' @return clustered dataset, matrix, first column identifies cluster of the row
 #' @import GEOquery
+#' @import preprocessCore
 #' @export
-preprocessGSE <- function(geoAccesion, annotate = TRUE, ...) {
+preprocessGSE <- function(geoAccesion, annotate = TRUE, normalize=TRUE, ...) {
     gse <- getGEO(geoAccesion)
     if (length(gse) > 1) {
         stop("This GSE has multiple expression sets. It's probably multiseries. Provide single series experiment")
     }
     gse <- gse[[1]]
     expressionData <- exprs(gse)
+
+    if (normalize) {
+        expressionData <- logDataset(expressionData)
+        expressionDataCopy <- normalize.quantiles(expressionData)
+        colnames(expressionDataCopy) <- colnames(expressionData)
+        rownames(expressionDataCopy) <- rownames(expressionData)
+        expressionData <- expressionDataCopy
+    }
+
     if (annotate) {
         preprocessDataset(expressionData, annotation = fData(gse), ...)
     } else {
