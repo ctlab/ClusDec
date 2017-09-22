@@ -23,7 +23,7 @@
 #' plotProportions(results$H, mixedProportions, pnames=c('ClusDec estimated', 'Actual'))
 #'
 #'@export
-plotProportions <- function(..., pnames = NULL) {
+plotProportions <- function(..., pnames = NULL, point_size=2, line_size=2) {
     requireNamespace("ggplot2")
     requireNamespace("reshape2")
 
@@ -56,8 +56,8 @@ plotProportions <- function(..., pnames = NULL) {
                                           y = value,
                                           fill = Var1,
                                           color = L1)) +
-        ggplot2::geom_line() +
-        ggplot2::geom_point() +
+        ggplot2::geom_line(size=line_size) +
+        ggplot2::geom_point(size=point_size) +
         ggplot2::scale_x_discrete(labels = colnames(proportions[[1]])) +
         ggplot2::facet_grid(Var1 ~ .) +
         ggplot2::ylab("proportions") +

@@ -32,3 +32,18 @@ pairwiseDemingRegression <- function(X) {
     colnames(results$R2) <- rownames(X)
     return(results)
 }
+
+#' Deconvolution by it self
+#'
+#' @return list containing basis, proportions and reconstructed results
+#' @export
+deconvolve <- function(mixedData, gg, coefMatrix, coef, dims) {
+    results <- .Call('clusdec_deconvolve', mixedData, gg, coefMatrix, coef, dims, PACKAGE="clusdec")
+    rownames(results$results) <- rownames(mixedData)
+    colnames(results$results) <- colnames(mixedData)
+    rownames(results$basis) <- rownames(mixedData)
+    colnames(results$basis) <- paste0("Cell type ", 1:dims)
+    rownames(results$proportions) <- paste0("Cell type ", 1:dims)
+    colnames(results$proportions) <- colnames(mixedData)
+    return(results)
+}

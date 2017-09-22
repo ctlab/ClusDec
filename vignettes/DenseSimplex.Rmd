@@ -1,0 +1,300 @@
+---
+title: "Density-based approach to find endpoints"
+subtitle: "with brand new presentations"
+author: "kz"
+date: "august/10/2017"
+output:
+  xaringan::moon_reader:
+    # lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+## Intuition behind the approach
+
+- It seems that we would like to find endpoints of "dense" simplexes and not the points that are just "far away" from each other and contain most of the points
+- However we have to describe "dense" sets formally
+
+---
+
+## Formulation
+
+- Let P be the set of $N$ points in $n$-dimensional space hence set $P$ can be described as $n \times N$ matrix where every column describes a points in $n$-dimensional space.
+
+$$P = \{p_1, p_2, \dots, p_N\}$$
+--
+
+$$P = \begin{bmatrix} p_{1, 1} & p_{1, 2} & \cdots & p_{1, N} \\ p_{2, 1} & p_{2, 2} & \cdots & p_{2, N} \\ \vdots & \vdots & \ddots & \vdots \\ p_{n, 1} & p_{n, 2} & \cdots & p_{n, N} \\ \end{bmatrix}$$
+
+---
+## Formulation
+
+- Let V be a set of points (endpoints of simplex) -- $n + 1$ points in $n$-dimensional space. V are simplex endpoints which means these points are not liying in any $(n-1)$-dimensional subspace i.e. $rank(V) = n$. We are going to write V in matrix form as well:
+$$V = \{v_1, \dots, v_{n+1}\}$$
+$$V = \begin{bmatrix} v_{1, 1} & v_{1, 2} & \cdots & v_{1, n + 1} \\ v_{2, 1} & v_{2, 2} & \cdots & v_{2, n + 1} \\ \vdots & \vdots & \ddots & \vdots \\ v_{n, 1} & v_{n, 2} & \cdots & v_{n, n + 1} \\ \end{bmatrix}$$
+--
+
+- Let $\Delta^V$ be a simplex built by V as simplex endpoints. We can easily write:
+$$\Delta^V = \left\{\alpha_1 v_1 + \dots +\alpha_{n + 1} v_{n + 1} ~\bigg|~ \sum_{i=1}^{n + 1} \alpha_i=1 \mbox{ and } \alpha_i \ge 0 \mbox{ for all } i\right\}$$
+
+---
+## Formulation
+
+Lets for a moment describe density as a function of given simplex V and given set of points P.
+
+- Lets define "density of simplex V in context of set of points P" as follows:
+$$ density(V, P) = \frac{| \{p \in P:\ p \in \Delta^V\} |}{Volume(V)} $$
+
+--
+
+- **First problem** we encounter is how to efficiently count number of points that are inside of given simplex for large N (around ~ 12000 genes)
+
+---
+## Barycentric coordinates
+
+For any set of $n + 1$ affinely independent points in $n$-dimensional space $V$ we can describe any point $s$ in $n$-dimensional space using barycentric coordinates $\alpha_i$, i.e.
+
+$$\forall\ V = \{v_1, \dots, v_{n + 1}\ \in \!R^n \ : \ rank(v_{2} - v_1, \dots,v_{n} - v_1, v_{n + 1} - v_1) = n\}$$
+$$\forall s \in \!R^n\ \exists!(\alpha_1, \alpha_2, \dots, \alpha_n, \alpha_{n+1}) : s = \alpha_1 v_1 + \dots +\alpha_{n + 1} v_{n + 1} \ |\ \sum_{i = 1}^{n + 1}{\alpha_i} = 1$$
+
+--
+
+Easy to see, that for any point $p$ in $P$ and a given simplex $\Delta^V$, $p$ is in $\Delta^V$ if and only if all the barycentric coordinates (with basis of $V$) of p are non-negative.
+
+Let 
+$$p = \alpha_1 v_1 + \dots +\alpha_{n + 1} v_{n + 1} \ |\ \sum_{i = 1}^{n + 1}{\alpha_i}=1$$
+then
+$$p \in \Delta^V \Longleftrightarrow \forall{a_i} \geq 0$$
+
+---
+
+## Barycentric coordinates transform
+
+Luckily we can tranform any point $p$ from $n$-dimensional space to $(n + 1)$-dimensional barycentric coordinates using **linear transformation** (aka **left matrix multiplication**). This allows us to perform this matrix operator to **all the points at once** which reduces computation time pretty significantly.
+
+This method was performed (and tested) first at dummy data of 12k points and some triangle as a given simplex.
+
+---
+
+## Show case: generated data
+
+```{r echo=F, fig.height=5, dpi=300, out.width='100%'}
+library(ggplot2)
+source("~/backup/ClusDec/clusdec/R/countInside.R")
+
+set.seed(1)
+exampleEndpoints <- matrix(c(
+ c(10, 10), c(11, 12), c(15, 14)
+), nrow=2)
+
+x_min <- min(exampleEndpoints[1, ])
+x_max <- max(exampleEndpoints[1, ])
+y_min <- min(exampleEndpoints[2, ])
+y_max <- max(exampleEndpoints[2, ])
+
+pointsToCheck <- matrix(c(
+    runif(12000, min = x_min, max = x_max),
+    runif(12000, min = y_min, max = y_max)
+), ncol=2)
+pointsToCheck <- t(pointsToCheck)
+
+
+pointsToPlot <- as.data.frame(t(pointsToCheck))
+colnames(pointsToPlot)  <- c("x", "y")
+
+toPlot <- as.data.frame(t(exampleEndpoints))
+colnames(toPlot) <- c("x", "y")
+
+
+ggplot(toPlot, aes(x=x, y=y)) + geom_point() + theme_bw() +
+    geom_point(data=pointsToPlot) +
+    geom_polygon(color="grey", fill="grey", alpha=0.5)
+
+```
+
+---
+## Show case: results
+
+
+```{r ,fig.height=5, dpi=300, out.width='100%'}
+start <- Sys.time()
+isInside <- countInside(exampleEndpoints, pointsToCheck)
+Sys.time() - start
+```
+
+---
+## Show case: results
+
+
+```{r echo=F, fig.height=5, dpi=300, out.width='100%'}
+pointsToPlot$inside <- isInside
+
+toPlot <- as.data.frame(t(exampleEndpoints))
+colnames(toPlot) <- c("x", "y")
+
+ggplot(toPlot, aes(x=x, y=y)) + geom_point() + theme_bw() +
+    geom_point(data=pointsToPlot, aes(color=inside))
+    # geom_polygon(color="grey", fill="grey", alpha=0.5)
+```
+
+---
+## Now back to density
+
+Once implemented quick counting of points inside of a simplex and since hypervolume of simplex can be easily calcualted as determinant of matrix devided by factorial of dimensionality we can easily write a function to calculate a density of a given simplex in context of set of points.
+
+```{r echo=F, fig.height=2.5, dpi=300, out.width='100%'}
+pointsToPlot$inside <- isInside
+
+toPlot <- as.data.frame(t(exampleEndpoints))
+colnames(toPlot) <- c("x", "y")
+
+ggplot(toPlot, aes(x=x, y=y)) + geom_point() + theme_bw() +
+    geom_point(data=pointsToPlot, aes(color=inside), size=0.3)
+    # geom_polygon(color="grey", fill="grey", alpha=0.5)
+```
+
+```{r }
+simplexDensity(exampleEndpoints, pointsToCheck)
+```
+
+---
+## Now back to density
+
+Once implemented quick counting of points inside of a simplex and since hypervolume of simplex can be easily calcualted as determinant of matrix devided by factorial of dimensionality we can easily write a function to calculate a density of a given simplex in context of set of points.
+
+```{r echo=F, fig.height=2.5, dpi=300, out.width='100%'}
+exampleEndpoints <- matrix(c(
+    c(10, 10), c(10, 14), c(15, 14)
+), nrow=2)
+isInside <- countInside(exampleEndpoints, pointsToCheck)
+pointsToPlot$inside <- isInside
+
+toPlot <- as.data.frame(t(exampleEndpoints))
+colnames(toPlot) <- c("x", "y")
+
+ggplot(toPlot, aes(x=x, y=y)) + geom_point() + theme_bw() +
+    geom_point(data=pointsToPlot, aes(color=inside), size=0.3)
+    # geom_polygon(color="grey", fill="grey", alpha=0.5)
+```
+
+```{r }
+simplexDensity(exampleEndpoints, pointsToCheck)
+```
+
+---
+## Densities are pretty similar -- no surpise
+Density function seems to be working
+
+---
+## Simulation data
+
+```{r echo=F}
+library(data.table)
+set.seed(1)
+
+sampleFromSimplexUniformly <- function(k=3, M=10000) {
+    x <- rep(0, k + 1)
+    x[k + 1] <- M
+    
+    x[2:k] <- sample(1:(M-1), k - 1)
+    x <- sort(x)
+    y <- (x - shift(x))[2:(k + 1)]
+    return(y / M)
+}
+
+samples <- 40
+cellTypes <- 3
+proportions <- matrix(0, ncol=samples, nrow=cellTypes)
+colnames(proportions) <- paste0("Sample ", 1:samples)
+rownames(proportions) <- paste0("Cell type ", 1:cellTypes)
+
+for (j in 1:samples) proportions[, j] <- sampleFromSimplexUniformly(cellTypes)
+half <- proportions[3, ] / 2
+proportions[1, ] <- proportions[1, ] + half
+proportions[3, ] <- proportions[3, ] - half
+
+genes <- 12000
+basis <- matrix(0, nrow=genes, ncol=cellTypes)
+rownames(basis) <- paste0("Gene ", 1:genes)
+colnames(basis) <- paste0("Cell type ", 1:cellTypes)
+
+for (i in 1:genes) {
+    basis[i, ] <- sampleFromSimplexUniformly() * runif(1, min=200, max=10000)
+}
+
+data <- basis %*% proportions
+
+```
+
+Lets get back to simulation data. At first we gonna check the density approach without noise. But anyway how are we going to find the endpoints of simplex? We can use simulated annealing to perform the search of perfect points in our space.
+
+---
+## Simulation data, how does it look like?
+
+```{r eval=F, fig.height=2.5, dpi=300, out.width='100%'}
+library(scatterplot3d)
+source("~/backup/ClusDec/clusdec/R/simplex_utils.R")
+
+dataReduced <- dimensionality_reduction(data, 3, projection = T)
+dataMean <- colMeans(dataReduced)
+dataShifted <- t(t(dataReduced) - dataMean)
+proj <- dimensionality_reduction(dataShifted, 2)
+proj <- as.data.frame(proj)
+colnames(proj) <- c("x", "y")
+ggplot(proj, aes(x=x, y=y)) + geom_point(size=0.3) + theme_bw()
+```
+
+---
+## Simulation data, how does it look like?
+
+```{r echo=F, fig.height=4, dpi=300, out.width='100%', message=F, warning=F}
+library(scatterplot3d)
+library(unmixR)
+library(amap)
+source("~/backup/ClusDec/clusdec/R/simplex_utils.R")
+
+dataReduced <- dimensionality_reduction(data, 3, projection = T)
+pp <- point_selection(dataReduced, 3, 1)
+dataMean <- colMeans(dataReduced)
+dataShifted <- t(t(dataReduced) - dataMean)
+proj <- dimensionality_reduction(dataShifted, 2)
+proj <- as.data.frame(proj)
+colnames(proj) <- c("x", "y")
+ggplot(proj, aes(x=x, y=y)) + geom_point(size=0.3) + theme_bw()
+```
+
+---
+## Simulated annealing
+
+We can use simulated annealing to find regions of high density
+
+In simulation dataset we gotta find 3 points in 2d space with highest possible density.
+
+```{r , message=F, warning=F}
+library(GenSA)
+
+P <- as.matrix(t(proj))
+xMin <- min(P[1, ])
+yMin <- min(P[2, ])
+xMax <- max(P[1, ])
+yMax <- max(P[2, ])
+
+lower <- rep(c(xMin, yMin), 3)
+upper <- rep(c(xMax, yMax), 3)
+
+# First approx is VCA points
+V <- P[, rownames(pp)]
+colnames(V) <- NULL
+
+```
+
+---
+## Simulated annealing
+
+
+

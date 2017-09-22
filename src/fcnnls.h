@@ -13,3 +13,4 @@ using namespace arma;
 arma::mat cssls(const arma::mat& CtC, const arma::mat& CtA, bool pseudo);
 arma::mat cssls(const arma::mat& CtC, const arma::mat& CtA, const arma::umat& Pset, bool pseudo);
 arma::mat fcnnls_c(const arma::mat& C, const arma::mat& A);
+arma::mat fcnnls_sum_to_one(const arma::mat& C, const arma::mat& A, double delta);

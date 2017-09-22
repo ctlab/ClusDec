@@ -26,9 +26,7 @@ arma::vec analysis_c(const arma::mat& mixedData,
                      int iterations=1000 * 1000) {
 
     int len = dims * (dims - 1);
-    vec lowerBound(len, fill::zeros);
-    vec higherBound(len); higherBound.fill(datum::pi / 2);
-    vec start = randu(len) * (datum::pi / 2);
+    vec start = randu(len) * 0.5 + 0.5;
 
     std::ostream nullstream(0);
     set_stream_err2(nullstream);
@@ -37,7 +35,7 @@ arma::vec analysis_c(const arma::mat& mixedData,
     double current_score = score(mixedData, gg, coef, start, dims);
 
     for (int i = 0; i < iterations; i++) {
-        vec next_point = randu(len) * (datum::pi / 2);
+        vec next_point = randu(len) * 0.5 + 0.5;
         double next_score = score(mixedData, gg, coef, next_point, dims);
         if (next_score < current_score) {
             Rcout << "Found better value: " << next_score << "\n";

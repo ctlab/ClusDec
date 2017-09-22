@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // fcnnls_c
 arma::mat fcnnls_c(const arma::mat& C, const arma::mat& A);
-RcppExport SEXP clusdec_fcnnls_c(SEXP CSEXP, SEXP ASEXP) {
+RcppExport SEXP _clusdec_fcnnls_c(SEXP CSEXP, SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,9 +18,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fcnnls_sum_to_one
+arma::mat fcnnls_sum_to_one(const arma::mat& C, const arma::mat& A, double delta);
+RcppExport SEXP _clusdec_fcnnls_sum_to_one(SEXP CSEXP, SEXP ASEXP, SEXP deltaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    rcpp_result_gen = Rcpp::wrap(fcnnls_sum_to_one(C, A, delta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // analysis_c
 arma::vec analysis_c(const arma::mat& mixedData, const arma::mat& gg, const arma::vec& coef, int dims, int iterations);
-RcppExport SEXP clusdec_analysis_c(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP, SEXP iterationsSEXP) {
+RcppExport SEXP _clusdec_analysis_c(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP, SEXP iterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,7 +48,7 @@ END_RCPP
 }
 // local_minimum
 arma::vec local_minimum(const arma::mat& mixedData, const arma::mat& gg, const arma::vec& coef, const arma::vec& initial_solution, int dims, double local_range, int local_step, int iterations);
-RcppExport SEXP clusdec_local_minimum(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP initial_solutionSEXP, SEXP dimsSEXP, SEXP local_rangeSEXP, SEXP local_stepSEXP, SEXP iterationsSEXP) {
+RcppExport SEXP _clusdec_local_minimum(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP initial_solutionSEXP, SEXP dimsSEXP, SEXP local_rangeSEXP, SEXP local_stepSEXP, SEXP iterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -53,7 +66,7 @@ END_RCPP
 }
 // particle_swarm_optimisation
 arma::vec particle_swarm_optimisation(const arma::mat& mixedData, const arma::mat& gg, const arma::vec& coef, int dims, int particles, int fun_calls, double omega, double phip, double phig, int threads_num);
-RcppExport SEXP clusdec_particle_swarm_optimisation(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP, SEXP particlesSEXP, SEXP fun_callsSEXP, SEXP omegaSEXP, SEXP phipSEXP, SEXP phigSEXP, SEXP threads_numSEXP) {
+RcppExport SEXP _clusdec_particle_swarm_optimisation(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP, SEXP particlesSEXP, SEXP fun_callsSEXP, SEXP omegaSEXP, SEXP phipSEXP, SEXP phigSEXP, SEXP threads_numSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +86,7 @@ END_RCPP
 }
 // explainedVariance
 double explainedVariance(const arma::vec& x, const arma::vec& y, double slope);
-RcppExport SEXP clusdec_explainedVariance(SEXP xSEXP, SEXP ySEXP, SEXP slopeSEXP) {
+RcppExport SEXP _clusdec_explainedVariance(SEXP xSEXP, SEXP ySEXP, SEXP slopeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -86,7 +99,7 @@ END_RCPP
 }
 // pairwiseLinearFit
 List pairwiseLinearFit(const arma::mat& X);
-RcppExport SEXP clusdec_pairwiseLinearFit(SEXP XSEXP) {
+RcppExport SEXP _clusdec_pairwiseLinearFit(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -97,7 +110,7 @@ END_RCPP
 }
 // pairwiseDemingRegression
 List pairwiseDemingRegression(const arma::mat& X);
-RcppExport SEXP clusdec_pairwiseDemingRegression(SEXP XSEXP) {
+RcppExport SEXP _clusdec_pairwiseDemingRegression(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,20 +119,43 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cartseianFromSpherical
-arma::vec cartseianFromSpherical(const arma::vec& angles);
-RcppExport SEXP clusdec_cartseianFromSpherical(SEXP anglesSEXP) {
+// sphericalFromCartesian
+arma::vec sphericalFromCartesian(const arma::vec& coords);
+RcppExport SEXP _clusdec_sphericalFromCartesian(SEXP coordsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type coords(coordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(sphericalFromCartesian(coords));
+    return rcpp_result_gen;
+END_RCPP
+}
+// parFromCoefMatrix
+arma::vec parFromCoefMatrix(const arma::mat& cm, int dims);
+RcppExport SEXP _clusdec_parFromCoefMatrix(SEXP cmSEXP, SEXP dimsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type cm(cmSEXP);
+    Rcpp::traits::input_parameter< int >::type dims(dimsSEXP);
+    rcpp_result_gen = Rcpp::wrap(parFromCoefMatrix(cm, dims));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cartesianFromSpherical
+arma::vec cartesianFromSpherical(const arma::vec& angles);
+RcppExport SEXP _clusdec_cartesianFromSpherical(SEXP anglesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type angles(anglesSEXP);
-    rcpp_result_gen = Rcpp::wrap(cartseianFromSpherical(angles));
+    rcpp_result_gen = Rcpp::wrap(cartesianFromSpherical(angles));
     return rcpp_result_gen;
 END_RCPP
 }
 // deconvolve
 List deconvolve(const arma::mat& mixedData, const arma::mat& gg, const arma::mat& coefMatrix, const arma::vec& coef, int dims);
-RcppExport SEXP clusdec_deconvolve(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefMatrixSEXP, SEXP coefSEXP, SEXP dimsSEXP) {
+RcppExport SEXP _clusdec_deconvolve(SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefMatrixSEXP, SEXP coefSEXP, SEXP dimsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -134,7 +170,7 @@ END_RCPP
 }
 // getCoefMatrix
 arma::mat getCoefMatrix(const arma::vec& par, int dims);
-RcppExport SEXP clusdec_getCoefMatrix(SEXP parSEXP, SEXP dimsSEXP) {
+RcppExport SEXP _clusdec_getCoefMatrix(SEXP parSEXP, SEXP dimsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -146,7 +182,7 @@ END_RCPP
 }
 // score_export
 double score_export(const arma::vec& par, const arma::mat& mixedData, const arma::mat& gg, const arma::vec& coef, int dims);
-RcppExport SEXP clusdec_score_export(SEXP parSEXP, SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP) {
+RcppExport SEXP _clusdec_score_export(SEXP parSEXP, SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -158,4 +194,43 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(score_export(par, mixedData, gg, coef, dims));
     return rcpp_result_gen;
 END_RCPP
+}
+// sum_to_one_export
+double sum_to_one_export(const arma::vec& par, const arma::mat& mixedData, const arma::mat& gg, const arma::vec& coef, int dims);
+RcppExport SEXP _clusdec_sum_to_one_export(SEXP parSEXP, SEXP mixedDataSEXP, SEXP ggSEXP, SEXP coefSEXP, SEXP dimsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type par(parSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type mixedData(mixedDataSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type gg(ggSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type coef(coefSEXP);
+    Rcpp::traits::input_parameter< int >::type dims(dimsSEXP);
+    rcpp_result_gen = Rcpp::wrap(sum_to_one_export(par, mixedData, gg, coef, dims));
+    return rcpp_result_gen;
+END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_clusdec_fcnnls_c", (DL_FUNC) &_clusdec_fcnnls_c, 2},
+    {"_clusdec_fcnnls_sum_to_one", (DL_FUNC) &_clusdec_fcnnls_sum_to_one, 3},
+    {"_clusdec_analysis_c", (DL_FUNC) &_clusdec_analysis_c, 5},
+    {"_clusdec_local_minimum", (DL_FUNC) &_clusdec_local_minimum, 8},
+    {"_clusdec_particle_swarm_optimisation", (DL_FUNC) &_clusdec_particle_swarm_optimisation, 10},
+    {"_clusdec_explainedVariance", (DL_FUNC) &_clusdec_explainedVariance, 3},
+    {"_clusdec_pairwiseLinearFit", (DL_FUNC) &_clusdec_pairwiseLinearFit, 1},
+    {"_clusdec_pairwiseDemingRegression", (DL_FUNC) &_clusdec_pairwiseDemingRegression, 1},
+    {"_clusdec_sphericalFromCartesian", (DL_FUNC) &_clusdec_sphericalFromCartesian, 1},
+    {"_clusdec_parFromCoefMatrix", (DL_FUNC) &_clusdec_parFromCoefMatrix, 2},
+    {"_clusdec_cartesianFromSpherical", (DL_FUNC) &_clusdec_cartesianFromSpherical, 1},
+    {"_clusdec_deconvolve", (DL_FUNC) &_clusdec_deconvolve, 5},
+    {"_clusdec_getCoefMatrix", (DL_FUNC) &_clusdec_getCoefMatrix, 2},
+    {"_clusdec_score_export", (DL_FUNC) &_clusdec_score_export, 5},
+    {"_clusdec_sum_to_one_export", (DL_FUNC) &_clusdec_sum_to_one_export, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_clusdec(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

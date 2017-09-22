@@ -17,4 +17,3 @@ deconvolution results, list with H and W matrices
 \description{
 Runs DSA implementation using .fccnls for solving least-squares with multiple right-hand-sides
 }
-

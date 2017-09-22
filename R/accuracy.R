@@ -53,8 +53,7 @@ clusdecAccuracy <- function(dataset, cellTypesNumber, cores = 1) {
 evalClusters <- function(dataset, clustering, cls, clusterNumber, cellTypesNumber) {
     dsaResults <- runDSA(dataset, clustering, cls)
     proportions <- dsaResults$H
-    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))),
-        "F")
+    sumToOneError <- norm(as.matrix(apply(proportions, 2, function(x) (1 - sum(x)))), "F")
 
     evaluated <- (dsaResults$W %*% dsaResults$H)[rownames(dataset), ]
 

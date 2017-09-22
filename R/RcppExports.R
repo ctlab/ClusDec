@@ -2,46 +2,62 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 fcnnls_c <- function(C, A) {
-    .Call('clusdec_fcnnls_c', PACKAGE = 'clusdec', C, A)
+    .Call('_clusdec_fcnnls_c', PACKAGE = 'clusdec', C, A)
+}
+
+fcnnls_sum_to_one <- function(C, A, delta = 1) {
+    .Call('_clusdec_fcnnls_sum_to_one', PACKAGE = 'clusdec', C, A, delta)
 }
 
 analysis_c <- function(mixedData, gg, coef, dims, iterations = 1000 * 1000L) {
-    .Call('clusdec_analysis_c', PACKAGE = 'clusdec', mixedData, gg, coef, dims, iterations)
+    .Call('_clusdec_analysis_c', PACKAGE = 'clusdec', mixedData, gg, coef, dims, iterations)
 }
 
 local_minimum <- function(mixedData, gg, coef, initial_solution, dims, local_range = 0.1, local_step = 100L, iterations = 100L) {
-    .Call('clusdec_local_minimum', PACKAGE = 'clusdec', mixedData, gg, coef, initial_solution, dims, local_range, local_step, iterations)
+    .Call('_clusdec_local_minimum', PACKAGE = 'clusdec', mixedData, gg, coef, initial_solution, dims, local_range, local_step, iterations)
 }
 
 particle_swarm_optimisation <- function(mixedData, gg, coef, dims, particles = 50L, fun_calls = 100000L, omega = 1, phip = 0.05, phig = 0.05, threads_num = 2L) {
-    .Call('clusdec_particle_swarm_optimisation', PACKAGE = 'clusdec', mixedData, gg, coef, dims, particles, fun_calls, omega, phip, phig, threads_num)
+    .Call('_clusdec_particle_swarm_optimisation', PACKAGE = 'clusdec', mixedData, gg, coef, dims, particles, fun_calls, omega, phip, phig, threads_num)
 }
 
 explainedVariance <- function(x, y, slope) {
-    .Call('clusdec_explainedVariance', PACKAGE = 'clusdec', x, y, slope)
+    .Call('_clusdec_explainedVariance', PACKAGE = 'clusdec', x, y, slope)
 }
 
 pairwiseLinearFit <- function(X) {
-    .Call('clusdec_pairwiseLinearFit', PACKAGE = 'clusdec', X)
+    .Call('_clusdec_pairwiseLinearFit', PACKAGE = 'clusdec', X)
 }
 
 pairwiseDemingRegression <- function(X) {
-    .Call('clusdec_pairwiseDemingRegression', PACKAGE = 'clusdec', X)
+    .Call('_clusdec_pairwiseDemingRegression', PACKAGE = 'clusdec', X)
 }
 
-cartseianFromSpherical <- function(angles) {
-    .Call('clusdec_cartseianFromSpherical', PACKAGE = 'clusdec', angles)
+sphericalFromCartesian <- function(coords) {
+    .Call('_clusdec_sphericalFromCartesian', PACKAGE = 'clusdec', coords)
+}
+
+parFromCoefMatrix <- function(cm, dims) {
+    .Call('_clusdec_parFromCoefMatrix', PACKAGE = 'clusdec', cm, dims)
+}
+
+cartesianFromSpherical <- function(angles) {
+    .Call('_clusdec_cartesianFromSpherical', PACKAGE = 'clusdec', angles)
 }
 
 deconvolve <- function(mixedData, gg, coefMatrix, coef, dims) {
-    .Call('clusdec_deconvolve', PACKAGE = 'clusdec', mixedData, gg, coefMatrix, coef, dims)
+    .Call('_clusdec_deconvolve', PACKAGE = 'clusdec', mixedData, gg, coefMatrix, coef, dims)
 }
 
 getCoefMatrix <- function(par, dims) {
-    .Call('clusdec_getCoefMatrix', PACKAGE = 'clusdec', par, dims)
+    .Call('_clusdec_getCoefMatrix', PACKAGE = 'clusdec', par, dims)
 }
 
 score_export <- function(par, mixedData, gg, coef, dims) {
-    .Call('clusdec_score_export', PACKAGE = 'clusdec', par, mixedData, gg, coef, dims)
+    .Call('_clusdec_score_export', PACKAGE = 'clusdec', par, mixedData, gg, coef, dims)
+}
+
+sum_to_one_export <- function(par, mixedData, gg, coef, dims) {
+    .Call('_clusdec_sum_to_one_export', PACKAGE = 'clusdec', par, mixedData, gg, coef, dims)
 }
 

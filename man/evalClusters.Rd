@@ -29,4 +29,3 @@ Then calculates Frobenius norm between logarithms of
 observed gene expression matrix
 and estimated gene expression matrix
 }
-

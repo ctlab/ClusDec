@@ -14,6 +14,7 @@ using namespace Rcpp;
 using namespace arma;
 
 arma::vec cartseianFromSpherical(const arma::vec& angles);
+arma::vec sphericalFromCartesian(const arma::vec& coords);
 List deconvolve(const arma::mat& mixedData,
                 const arma::mat& gg,
                 const arma::mat& coefMatrix,
@@ -30,3 +31,13 @@ double score(const arma::vec& par,
              const arma::mat& gg,
              const arma::vec& coef,
              int dims);
+double sum_to_one(const arma::mat& mixedData,
+                  const arma::mat& gg,
+                  const arma::vec& coef,
+                  const arma::vec& par,
+                  int dims);
+double sum_to_one_export(const arma::vec& par,
+                         const arma::mat& mixedData,
+                         const arma::mat& gg,
+                         const arma::vec& coef,
+                         int dims);

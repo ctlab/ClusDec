@@ -36,4 +36,3 @@ prep <- preprocessDataset(datasetLiverBrainLung, k=5) # 5 clusters
 prep <- preprocessDataset(datasetLiverBrainLung, topGenes=6000) # leave only top 6k genes
 
 }
-

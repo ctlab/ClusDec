@@ -4,7 +4,7 @@
 \alias{preprocessGSE}
 \title{Preprocess GSE Dataset}
 \usage{
-preprocessGSE(geoAccesion, annotate = TRUE, ...)
+preprocessGSE(geoAccesion, annotate = TRUE, normalize = TRUE, ...)
 }
 \arguments{
 \item{geoAccesion}{e.g 'GSE19830'}
@@ -19,4 +19,3 @@ clustered dataset, matrix, first column identifies cluster of the row
 \description{
 Downloads GSE dataset by GEO accession and performs preprocessing
 }
-

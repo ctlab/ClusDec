@@ -18,4 +18,3 @@ matrix, clustered dataset
 Clusters given dataset using cosine simillarity as distance
 Uses Kmeans from amap
 }
-

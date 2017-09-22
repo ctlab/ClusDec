@@ -18,6 +18,27 @@ fastDSA <- function(dataset, genes) {
     return(list(H = H, W = t(res$coef)))
 }
 
+#' DSA algorithm implementation for pure points
+#'
+#' Runs DSA implementation using fcnnls_c for solving least-squares with multiple right-hand-sides
+#'
+#' @param dataset gene expression matrix
+#' @param pure matrix contains expression of signature genes
+#' @export
+#'
+#' @return deconvolution results, list with H and W matrices
+pureDsa <- function(dataset, pure) {
+    ones <- matrix(1, nrow=nrow(pure), ncol=1)
+    cfs <- fcnnls_c(pure, ones)
+    H <- pure %*% diag(as.numeric(cfs))
+    W <- fcnnls_c(H, t(dataset))
+
+    colnames(H) <- paste0("Cell type ", 1:ncol(pure))
+    rownames(W) <- paste0("Cell type ", 1:ncol(pure))
+    colnames(W) <- rownames(dataset)
+
+    return(list(W=t(W), H=t(H)))
+}
 #' Run DSA by clusters
 #'
 #' Runs DSA with provided clusters as putative signatures

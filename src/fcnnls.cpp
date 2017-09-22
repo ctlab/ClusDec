@@ -139,3 +139,16 @@ arma::mat fcnnls_c(const arma::mat& C,
     return K;
 
 }
+
+// [[Rcpp::export]]
+arma::mat fcnnls_sum_to_one(const arma::mat& C,
+                            const arma::mat& A,
+                            double delta = 1) {
+    mat C_copy(C.n_rows + 1, C.n_cols);
+    mat A_copy(A.n_rows + 1, A.n_cols);
+    C_copy.rows(0, C.n_rows - 1) = C * delta;
+    A_copy.rows(0, A.n_rows - 1) = A * delta;
+    C_copy.row(C.n_rows).fill(1);
+    A_copy.row(A.n_rows).fill(1);
+    return(fcnnls_c(C_copy, A_copy));
+}

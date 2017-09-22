@@ -17,4 +17,3 @@ collapsed gene expression matrix with probes replaced with corresponding genes
 \description{
 Collapses given dataset so every gene is presented by the highest expressed probe
 }
-

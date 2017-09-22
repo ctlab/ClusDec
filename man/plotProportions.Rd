@@ -4,7 +4,7 @@
 \alias{plotProportions}
 \title{Draw a plot of estimated proportions}
 \usage{
-plotProportions(..., pnames = NULL)
+plotProportions(..., pnames = NULL, point_size = 2, line_size = 2)
 }
 \arguments{
 \item{...}{matricies, data frames, NMF objects of estimated proportions or paths to file}
@@ -34,4 +34,3 @@ mixedProportions <- proportionsLiverBrainLung[, 10:42]
 plotProportions(results$H, mixedProportions, pnames=c('ClusDec estimated', 'Actual'))
 
 }
-

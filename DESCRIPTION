@@ -29,4 +29,4 @@ Suggests:
     rmarkdown,
     testthat
 Enhances: ggplot2, reshape2, pheatmap
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

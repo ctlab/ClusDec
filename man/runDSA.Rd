@@ -19,4 +19,3 @@ deconvolution results, list with H and W matrices
 \description{
 Runs DSA with provided clusters as putative signatures
 }
-

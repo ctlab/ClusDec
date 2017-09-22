@@ -15,4 +15,3 @@ list containing two N x N matrices: R2 and slopes
 \description{
 Performs pairwise linear fit gene1 ~ k * gene2
 }
-
